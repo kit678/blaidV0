@@ -1,0 +1,23 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: React component conventions
+globs: ["app/components/**/*.tsx"]
+alwaysApply: true
+---
+
+1. All components must:
+   - Use TypeScript interfaces for props
+   - Follow Radix UI composition patterns
+   - Export as named functions
+   - Include JSDoc type hints
+
+2. File naming:
+   - PascalCase for components
+   - .tsx extension
+   - colocate tests as Component.test.tsx
+
+@component-template.tsx

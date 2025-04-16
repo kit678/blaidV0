@@ -1,0 +1,22 @@
+---
+description: 
+globs: components/**/*Form.tsx,pages/**/*Form.tsx,!**/*.test.tsx
+alwaysApply: false
+---
+---
+description: Form handling standards
+globs: ["app/forms/**/*.tsx"]
+autoAttach: true
+---
+
+1. Always use:
+   - react-hook-form for form state
+   - zod schema validation
+   - Radix Form primitives
+
+2. Required patterns:
+   - Type-safe field components
+   - Error message handling
+   - Loading states for submissions
+
+@form-template.tsx

@@ -1,0 +1,23 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Tailwind CSS conventions
+globs: ["**/*.tsx"]
+alwaysApply: true  
+---
+
+1. Styling rules:
+   - Use tailwind-merge for class combining
+   - Prefer utility classes over CSS-in-JS
+   - Animate with tailwindcss-animate
+   - Dark mode via next-themes
+
+2. Avoid:
+   - Inline styles
+   - Custom CSS files
+   - Component-scoped CSS
+
+@styling-utils.ts
