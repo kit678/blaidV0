@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useRef } from "react"
 import Image from "next/image"
-import { motion, useInView } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 
 const projects = [
   {
@@ -14,6 +15,8 @@ const projects = [
     image: "https://images.unsplash.com/photo-1507146153580-69a1fe6d8aa1",
     color: "#6366F1",
     slug: "conversai-intelligent-support",
+    description:
+      "An AI-powered chatbot using GPT-4o to provide instant, intelligent customer support, reducing wait times and improving satisfaction.",
   },
   {
     title: "ContentForge AI",
@@ -22,6 +25,8 @@ const projects = [
     image: "https://images.unsplash.com/photo-1606857521015-7f9fcf423740",
     color: "#10B981",
     slug: "contentforge-ai",
+    description:
+      "Generate high-quality marketing content in multiple formats, optimized for SEO, driving engagement and organic growth.",
   },
   {
     title: "InsightPulse",
@@ -30,6 +35,8 @@ const projects = [
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71",
     color: "#3B82F6",
     slug: "insightpulse",
+    description:
+      "Transform raw data into actionable insights with powerful visualization tools and predictive analytics capabilities.",
   },
   {
     title: "NarrativeCraft",
@@ -38,6 +45,7 @@ const projects = [
     image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8",
     color: "#8B5CF6",
     slug: "narrativecraft",
+    description: "Create immersive, interactive stories using generative AI, perfect for education and entertainment.",
   },
   {
     title: "AdGenesis",
@@ -46,6 +54,7 @@ const projects = [
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
     color: "#EC4899",
     slug: "adgenesis",
+    description: "Automate ad creative generation and A/B testing across multiple formats to optimize campaign performance.",
   },
   {
     title: "DocuMind Analyzer",
@@ -54,163 +63,227 @@ const projects = [
     image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85",
     color: "#F59E0B",
     slug: "documind-analyzer",
+    description: "Extract key information and build knowledge graphs from complex documents to accelerate research and analysis.",
   },
 ]
 
+const NUM_PROJECTS = 3; // Number of projects to animate
+const PROJECT_SECTION_HEIGHT_VH = 200; // VH per project for scroll calculation
+
+/**
+ * FeaturedWork component with scroll-driven animations.
+ * @returns {JSX.Element} The rendered FeaturedWork component.
+ */
 export default function FeaturedWork() {
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null)
-  const sectionRef = useRef(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
+  const marqueeRef = useRef(null) // section work1
+  const featuredSectionWrapperRef = useRef(null) // New wrapper for section work2 height
+  const featuredSectionStickyRef = useRef(null) // Ref for the sticky container
+  const buttonRef = useRef(null);
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  }
+  // Marquee scroll animation
+  const { scrollYProgress: marqueeScrollProgress } = useScroll({
+    target: marqueeRef,
+    offset: ["start end", "end start"]
+  })
+  const marqueeX = useTransform(marqueeScrollProgress, [0, 1], ["100%", "-100%"])
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 50,
-        damping: 20,
-      },
-    },
-  }
+  // Overall scroll progress through the *entire* featured works section
+  const { scrollYProgress: overallScrollProgress } = useScroll({
+    target: featuredSectionWrapperRef, // Target the tall wrapper
+    offset: ["start center", "end end"] // Start tracking when top hits viewport center
+  });
 
-  const tagVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: (i: number) => ({
-      opacity: 1,
-      scale: 1,
-      transition: {
-        delay: i * 0.05,
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-      },
-    }),
-  }
+  // Black section initial slide-up
+   const { scrollYProgress: blackSectionEntryProgress } = useScroll({
+     target: featuredSectionWrapperRef,
+     offset: ["start end", "start start"] // From bottom of viewport to top
+   })
+   const blackSectionY = useTransform(blackSectionEntryProgress, [0, 1], ["100%", "0%"])
+
 
   return (
-    <section ref={sectionRef} className="py-20 md:py-32 bg-black text-white overflow-hidden">
-      <div className="container mx-auto px-4 md:px-16">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-          transition={{ duration: 0.6, type: "spring", stiffness: 50, damping: 20 }}
-          className="flex flex-col md:flex-row justify-between items-baseline mb-16"
-        >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-0">Featured work</h2>
-          <p className="text-white/60 max-w-md">
-            Our innovation lab where cutting-edge AI solutions are developed, tested, and refined for real-world
-            applications.
-          </p>
-        </motion.div>
+    <>
+      {/* White section with marquee text (section work1) */}
+      <section
+        ref={marqueeRef}
+        className="relative h-[50vh] bg-white overflow-hidden"
+      >
+        <div className="sticky top-0 h-full flex items-center">
+          <motion.h2
+            className="text-[15vw] font-extrabold whitespace-nowrap text-black absolute right-0"
+            style={{ x: marqueeX, willChange: "transform" }}
+          >
+            Featured Work
+          </motion.h2>
+        </div>
+      </section>
 
+      {/* Tall Wrapper for Black Section (section work2) - Defines scroll height */}
+      <div
+        ref={featuredSectionWrapperRef}
+        className="relative"
+        style={{ height: `${NUM_PROJECTS * PROJECT_SECTION_HEIGHT_VH}vh` }} // Set height based on projects
+      >
+        {/* Sticky Container for actual content */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
+          ref={featuredSectionStickyRef}
+          className="sticky top-0 h-screen bg-black text-white overflow-hidden"
+          style={{
+             y: blackSectionY, // Initial slide-up
+             willChange: "transform",
+             zIndex: 10
+           }}
         >
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              onHoverStart={() => setHoveredProject(project.slug)}
-              onHoverEnd={() => setHoveredProject(null)}
-            >
-              <Link href={`/work/${project.slug}`} className="block group h-full">
-                <div
-                  className="relative overflow-hidden rounded-lg mb-6 aspect-[4/3]"
-                  style={{ backgroundColor: project.color }}
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className="h-full w-full"
-                  >
-                    <Image
-                      src={project.image || "/placeholder.svg"}
-                      alt={project.title}
-                      fill
-                      className="object-cover opacity-70 transition-all duration-500"
-                    />
-                  </motion.div>
-                  <motion.div
-                    className="absolute bottom-6 right-6 bg-white text-black p-3 rounded-full"
-                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                    animate={
-                      hoveredProject === project.slug
-                        ? { opacity: 1, scale: 1, y: 0 }
-                        : { opacity: 0, scale: 0.8, y: 20 }
-                    }
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                  >
-                    <ArrowUpRight className="h-6 w-6" />
-                  </motion.div>
-                </div>
-                <motion.h3
-                  className="text-xl md:text-2xl font-bold mb-2"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ delay: 0.1 + index * 0.1, duration: 0.5 }}
-                >
-                  {project.title}
-                </motion.h3>
-                <motion.p
-                  className="text-white/60 mb-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
-                >
-                  {project.client}
-                </motion.p>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag, tagIndex) => (
-                    <motion.span
-                      key={tagIndex}
-                      custom={tagIndex}
-                      variants={tagVariants}
-                      className="text-sm border border-white/30 rounded-full px-3 py-1"
-                    >
-                      {tag}
-                    </motion.span>
-                  ))}
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+          {/* Featured works */}
+          {projects.slice(0, NUM_PROJECTS).map((project, index) => {
+            const isLeftAligned = index % 2 === 0
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ delay: 0.8, duration: 0.6, type: "spring" }}
-          className="mt-16 text-center"
-        >
-          <Link href="/work">
-            <motion.span
-              className="inline-block border border-white text-white py-3 px-8 rounded-full font-medium hover:bg-white hover:text-black transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              View all projects
-            </motion.span>
-          </Link>
+            // Calculate the start and end scroll progress for this project's segment
+            const segmentStart = index / NUM_PROJECTS;
+            const segmentEnd = (index + 1) / NUM_PROJECTS;
+
+            // Define animation ranges *within* this segment
+            const entryStart = segmentStart;
+            const entryEnd = segmentStart + (segmentEnd - segmentStart) * 0.4; // Entry takes 40%
+            const exitStart = entryEnd;
+            const exitEnd = segmentEnd;
+
+            // --- Image Animation ---
+            const imgY = useTransform(
+              overallScrollProgress,
+              [entryStart, entryEnd, exitStart, exitEnd],
+              ["100%", "0%", "0%", "-100%"]
+            );
+
+
+            // --- Description Animation ---
+            const descEntryStart = segmentStart + (segmentEnd - segmentStart) * 0.1; // Start slightly after image
+            const descEntryEnd = entryEnd;
+            const descXEntryValues = isLeftAligned ? ["100%", "0%"] : ["-100%", "0%"];
+            const descX = useTransform(
+              overallScrollProgress,
+              [descEntryStart, descEntryEnd, exitStart, exitEnd],
+              [descXEntryValues[0], descXEntryValues[1], "0%", "0%"]
+            );
+
+            // Define vertical movement for description, matching the image
+            const descY = useTransform(
+              overallScrollProgress,
+              [entryStart, entryEnd, exitStart, exitEnd], // Same ranges as image
+              ["100%", "0%", "0%", "-100%"]             // Same vertical motion as image
+            );
+
+             // --- Opacity Animation ---
+             const opacity = useTransform(
+                 overallScrollProgress,
+                 [entryStart, entryStart + 0.1, exitEnd - 0.1, exitEnd],
+                 [0, 1, 1, 0]
+             );
+
+
+            return (
+              <motion.div
+                key={project.slug}
+                className="absolute inset-0 h-screen w-full flex items-center justify-center"
+                style={{ opacity: opacity }}
+              >
+                <div className="container mx-auto px-4 md:px-16">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-16">
+                      {/* Image Container */}
+                      <motion.div
+                        className={cn(
+                          "w-full md:w-1/2 relative aspect-[4/3] rounded-lg overflow-hidden shadow-2xl",
+                          isLeftAligned ? "md:order-1" : "md:order-2"
+                        )}
+                        style={{
+                          y: imgY,
+                          willChange: "transform",
+                        }}
+                      >
+                        <Link href={`/work/${project.slug}`} className="block group h-full w-full">
+                          <Image
+                            src={project.image || "/placeholder.svg"}
+                            alt={project.title}
+                            fill
+                            className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
+                          <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 bg-white text-black p-2 sm:p-3 rounded-full opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-300 ease-in-out">
+                            <ArrowUpRight className="h-4 w-4 sm:h-6 sm:w-6" />
+                          </div>
+                        </Link>
+                      </motion.div>
+
+                      {/* Text Content */}
+                      <motion.div
+                        className={cn(
+                          "w-full md:w-1/2 flex flex-col",
+                          isLeftAligned ? "md:order-2 md:items-start" : "md:order-1 md:items-end md:text-right"
+                        )}
+                        style={{
+                          x: descX,
+                          y: descY,
+                          willChange: "transform",
+                        }}
+                      >
+                        <Link href={`/work/${project.slug}`} className="group">
+                          <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 group-hover:text-indigo-400 transition-colors duration-300">
+                            {project.title}
+                          </h3>
+                          <p className="text-lg md:text-xl text-white/70 mb-5">
+                            {project.description}
+                          </p>
+                          <p className="text-md text-white/50 mb-6">{project.client}</p>
+                        </Link>
+                        <div className={cn("flex flex-wrap gap-2", isLeftAligned ? "justify-start" : "md:justify-end")}>
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-sm border border-white/30 rounded-full px-3 py-1"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        <Link href={`/work/${project.slug}`} className="mt-6 inline-block">
+                          <motion.span
+                            className="flex items-center text-indigo-400 group"
+                            whileHover="hover"
+                          >
+                            View Project
+                            <motion.span variants={{ hover: { x: 4 } }} className="ml-1 transition-transform">
+                              <ArrowUpRight className="h-5 w-5" />
+                            </motion.span>
+                          </motion.span>
+                        </Link>
+                      </motion.div>
+                    </div>
+                  </div>
+              </motion.div>
+            )
+          })}
+           {/* Explore All Button */}
+             <motion.div
+                 ref={buttonRef}
+                 className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20"
+                 style={{
+                     opacity: useTransform(overallScrollProgress, [2/3, 0.8], [0, 1])
+                 }}
+             >
+                 <Link href="/work">
+                     <motion.span
+                         className="inline-block border border-white text-white py-3 px-8 rounded-full font-medium hover:bg-white hover:text-black transition-colors duration-300"
+                         whileHover={{ scale: 1.05 }}
+                         whileTap={{ scale: 0.95 }}
+                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                     >
+                         View all projects
+                     </motion.span>
+                 </Link>
+             </motion.div>
         </motion.div>
       </div>
-    </section>
+    </>
   )
 }

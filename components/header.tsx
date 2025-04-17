@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -69,7 +70,13 @@ export default function Header() {
     >
       <div className="flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-white">
-          <span className="font-bold text-xl">BLAIDE</span>
+          <Image
+            src="/logo.svg"
+            alt="Blaide Logo"
+            width={100}
+            height={32}
+            className="filter invert"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">

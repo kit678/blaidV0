@@ -4,15 +4,20 @@ import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import Image from "next/image"
 
+// Updated clients array with actual logo paths
 const clients = [
-  { name: "Client 1", logo: "/placeholder.svg?height=100&width=200" },
-  { name: "Client 2", logo: "/placeholder.svg?height=100&width=200" },
-  { name: "Client 3", logo: "/placeholder.svg?height=100&width=200" },
-  { name: "Client 4", logo: "/placeholder.svg?height=100&width=200" },
-  { name: "Client 5", logo: "/placeholder.svg?height=100&width=200" },
-  { name: "Client 6", logo: "/placeholder.svg?height=100&width=200" },
-  { name: "Client 7", logo: "/placeholder.svg?height=100&width=200" },
-  { name: "Client 8", logo: "/placeholder.svg?height=100&width=200" },
+  { name: "Morgan Stanley", logo: "/clients/morgan.svg" },
+  { name: "Manipal", logo: "/clients/manipal.svg" },
+  { name: "Tata", logo: "/clients/tata-logo.svg" },
+  { name: "Baruch", logo: "/clients/baruch.svg" },
+  { name: "Delta Airlines", logo: "/clients/delta-airlines.svg" },
+  { name: "Pivoton", logo: "/clients/pivoton.svg" },
+  { name: "Citrix", logo: "/clients/citrix.svg" },
+  { name: "Illinois University", logo: "/clients/illinois-university-2.svg" },
+  { name: "Stevens Institute", logo: "/clients/stevens-institute-of-technology.svg" },
+  { name: "Credit Suisse", logo: "/clients/credit-suisse-1.svg" },
+  { name: "IBM", logo: "/clients/ibm.svg" },
+  // Add any other clients here following the pattern
 ]
 
 export default function ClientsSection() {
@@ -47,38 +52,40 @@ export default function ClientsSection() {
   return (
     <section ref={sectionRef} className="py-20 bg-white text-black overflow-hidden">
       <div className="container mx-auto px-4 md:px-16">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, type: "spring" }}
-          className="text-2xl md:text-3xl font-bold mb-16 text-center"
-        >
-          Trusted by innovative organizations
-        </motion.h2>
-
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16"
+          // Changed grid columns for more balanced rows: 2 -> 3 -> 4
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-8 gap-y-12 md:gap-x-16 md:gap-y-16 items-center justify-items-center" // Added justify-items-center
         >
-          {clients.map((client, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ scale: 1.1, grayscale: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300"
-            >
-              <Image
-                src={client.logo || "/placeholder.svg"}
-                alt={client.name}
-                width={160}
-                height={80}
-                className="h-12 md:h-16 w-auto object-contain"
-              />
-            </motion.div>
-          ))}
+          {clients.map((client, index) => {
+            // Add specific class for the Stevens logo if needed
+            const isStevensLogo = client.name === "Stevens Institute";
+            const logoHeightClass = isStevensLogo
+              ? "h-12 md:h-14" // Slightly larger height for Stevens
+              : "h-10 md:h-12"; // Default height for others
+
+            return (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                // Make the container slightly taller to accommodate the potentially larger Stevens logo
+                className={`flex items-center justify-center p-2 grayscale hover:grayscale-0 transition-all duration-300 ${isStevensLogo ? 'h-16' : 'h-14 md:h-16'}`} // Adjust container height
+              >
+                <Image
+                  src={client.logo}
+                  alt={client.name}
+                  width={160} // Keep base width/height for Next.js
+                  height={isStevensLogo ? 56 : 48} // Adjust base height slightly for Stevens
+                  // Apply conditional height class and existing classes
+                  className={`${logoHeightClass} w-auto object-contain`}
+                />
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

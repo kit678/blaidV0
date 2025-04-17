@@ -247,7 +247,7 @@ export default function Footer() {
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
           onClick={handleScrollToTop}
-          className="fixed bottom-8 right-8 bg-white text-black p-3 rounded-full shadow-lg"
+          className="fixed bottom-8 right-8 bg-white text-black p-3 rounded-full shadow-lg z-50"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
