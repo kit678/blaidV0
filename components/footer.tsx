@@ -50,8 +50,8 @@ export default function Footer() {
     <footer className="bg-black text-white pt-16 pb-8 relative">
       <div className="container mx-auto px-4 md:px-16">
         <div className="flex flex-col md:flex-row justify-between mb-16">
-          <div className="mb-8 md:mb-0">
-            <Link href="/" className="inline-block mb-6">
+          <div className="flex flex-col mb-8 md:mb-0">
+            <Link href="/" className="inline-block mb-2">
               <motion.span
                 className="font-bold text-2xl"
                 whileHover={{ scale: 1.05 }}
@@ -63,57 +63,14 @@ export default function Footer() {
             <motion.a
               href="mailto:info@blaide.com"
               className="text-white/80 hover:text-white transition-colors"
-              whileHover={{ x: 5 }}
+              whileHover={{ x: 0 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               info@blaide.com
             </motion.a>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="font-bold mb-4">Services</h3>
-              <ul className="space-y-2">
-                <li>
-                  <motion.div variants={linkVariants} whileHover="hover">
-                    <Link
-                      href="/services/innovation-strategy"
-                      className="text-white/60 hover:text-white transition-colors"
-                    >
-                      Innovation Strategy
-                    </Link>
-                  </motion.div>
-                </li>
-                <li>
-                  <motion.div variants={linkVariants} whileHover="hover">
-                    <Link
-                      href="/services/digital-transformation"
-                      className="text-white/60 hover:text-white transition-colors"
-                    >
-                      Digital Transformation
-                    </Link>
-                  </motion.div>
-                </li>
-                <li>
-                  <motion.div variants={linkVariants} whileHover="hover">
-                    <Link href="/services/design-thinking" className="text-white/60 hover:text-white transition-colors">
-                      Design Thinking
-                    </Link>
-                  </motion.div>
-                </li>
-                <li>
-                  <motion.div variants={linkVariants} whileHover="hover">
-                    <Link
-                      href="/services/future-foresight"
-                      className="text-white/60 hover:text-white transition-colors"
-                    >
-                      Future Foresight
-                    </Link>
-                  </motion.div>
-                </li>
-              </ul>
-            </div>
-
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
               <h3 className="font-bold mb-4">Company</h3>
               <ul className="space-y-2">

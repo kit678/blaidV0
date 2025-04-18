@@ -10,11 +10,8 @@ import { Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const navLinks = [
-  { href: "/#", label: "Home" },
   { href: "/#services", label: "Services" },
   { href: "/work", label: "Work" },
-  { href: "/#about", label: "About" },
-  { href: "/blog", label: "Blog" },
 ]
 
 export default function Header() {
@@ -71,7 +68,7 @@ export default function Header() {
       <div className="flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-white">
           <Image
-            src="/logo.svg"
+            src="/logov3.svg"
             alt="Blaide Logo"
             width={100}
             height={32}

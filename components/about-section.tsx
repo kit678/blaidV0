@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, useSpring, useMotionValueEvent } from 
 import Image from "next/image"
 import Link from "next/link"
 import { useRef, useState } from "react"
+import ContactCTA from "./contact-cta"
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -65,7 +66,7 @@ export default function AboutSection() {
   })
 
   return (
-    <section id="about" ref={sectionRef} className="h-[300vh] py-20 md:py-32 bg-white text-black relative">
+    <section id="infographic-2" ref={sectionRef} className="h-[300vh] py-20 md:py-32 bg-white text-black relative">
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="container mx-auto px-4 md:px-16 h-full flex items-center">
           <div className="grid md:grid-cols-2 gap-16 items-center w-full">

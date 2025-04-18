@@ -215,19 +215,19 @@ export default function FeaturedWork() {
                         </Link>
                       </motion.div>
 
-                      {/* Text Content */}
-                      <motion.div
-                        className={cn(
-                          "w-full md:w-1/2 flex flex-col",
-                          isLeftAligned ? "md:order-2 md:items-start" : "md:order-1 md:items-end md:text-right"
-                        )}
-                        style={{
-                          x: descX,
-                          y: descY,
-                          willChange: "transform",
-                        }}
-                      >
-                        <Link href={`/work/${project.slug}`} className="group">
+                      {/* Text Content - Wrap this whole motion div in the Link */}
+                      <Link href={`/work/${project.slug}`} className="block w-full md:w-1/2 group"> {/* Added Link wrapper, adjust width */}
+                        <motion.div
+                          className={cn(
+                            "flex flex-col h-full", // Ensure flex takes full height if needed
+                            isLeftAligned ? "md:items-start" : "md:items-end md:text-right"
+                          )}
+                          style={{
+                            x: descX,
+                            y: descY,
+                            willChange: "transform",
+                          }}
+                        >
                           <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 group-hover:text-indigo-400 transition-colors duration-300">
                             {project.title}
                           </h3>
@@ -235,29 +235,28 @@ export default function FeaturedWork() {
                             {project.description}
                           </p>
                           <p className="text-md text-white/50 mb-6">{project.client}</p>
-                        </Link>
-                        <div className={cn("flex flex-wrap gap-2", isLeftAligned ? "justify-start" : "md:justify-end")}>
-                          {project.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-sm border border-white/30 rounded-full px-3 py-1"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                        <Link href={`/work/${project.slug}`} className="mt-6 inline-block">
-                          <motion.span
-                            className="flex items-center text-indigo-400 group"
-                            whileHover="hover"
-                          >
-                            View Project
-                            <motion.span variants={{ hover: { x: 4 } }} className="ml-1 transition-transform">
-                              <ArrowUpRight className="h-5 w-5" />
-                            </motion.span>
-                          </motion.span>
-                        </Link>
-                      </motion.div>
+
+                          <div className={cn("flex flex-wrap gap-2", isLeftAligned ? "justify-start" : "md:justify-end")}>
+                            {project.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-sm border border-white/30 rounded-full px-3 py-1"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          {/* Add a visual cue for the link area if desired, e.g., within the text div */}
+                          <div className="mt-6 inline-block">
+                              <span className="flex items-center text-indigo-400">
+                                  View Project
+                                  <span className="ml-1 transition-transform group-hover:translate-x-1">
+                                      <ArrowUpRight className="h-5 w-5" />
+                                  </span>
+                              </span>
+                          </div>
+                        </motion.div>
+                      </Link>
                     </div>
                   </div>
               </motion.div>

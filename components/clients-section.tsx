@@ -57,7 +57,9 @@ export default function ClientsSection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           // Changed grid columns for more balanced rows: 2 -> 3 -> 4
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-8 gap-y-12 md:gap-x-16 md:gap-y-16 items-center justify-items-center" // Added justify-items-center
+          // className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-8 gap-y-12 md:gap-x-16 md:gap-y-16 items-center justify-items-center" // Added justify-items-center
+          // Switch to Flexbox for centering incomplete last row
+          className="flex flex-wrap justify-center items-center gap-x-8 gap-y-12 md:gap-x-16 md:gap-y-16"
         >
           {clients.map((client, index) => {
             // Add specific class for the Stevens logo if needed

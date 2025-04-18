@@ -123,14 +123,14 @@ export default function WorkPage() {
           transition={{ duration: 0.6 }}
           className="max-w-4xl mb-16"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Our Work</h1>
+          {/* <h1 className="text-4xl md:text-6xl font-bold mb-6">Our Work</h1> */}
           <p className="text-xl md:text-2xl">
             Explore our portfolio of cutting-edge AI solutions developed in our innovation labs.
           </p>
         </motion.div>
 
-        <div className="mb-12 overflow-x-auto">
-          <div className="flex space-x-4 pb-2 min-w-max">
+        <div className="mb-12">
+          <div className="flex flex-wrap justify-center gap-4 pb-2">
             {categories.map((category) => (
               <button
                 key={category}
