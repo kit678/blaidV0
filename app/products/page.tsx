@@ -107,7 +107,7 @@ const categories = [
   "Financial Trading",
 ]
 
-export default function WorkPage() {
+export default function ProductsPage() {
   const [activeCategory, setActiveCategory] = useState("All")
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null)
 
@@ -155,7 +155,7 @@ export default function WorkPage() {
               onMouseEnter={() => setHoveredProduct(product.slug)}
               onMouseLeave={() => setHoveredProduct(null)}
             >
-              <Link href={`/work/${product.slug}`} className="block group h-full">
+              <Link href={`/products/${product.slug}`} className="block group h-full">
                 <div className="flex flex-col h-full">
                   <div
                     className="relative overflow-hidden rounded-lg mb-6 aspect-[4/3]"
@@ -192,4 +192,4 @@ export default function WorkPage() {
       </div>
     </div>
   )
-}
+} 

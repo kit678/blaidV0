@@ -83,6 +83,7 @@ export default function Footer() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+            {/* Remove the Company column div
             <div>
               <h3 className="font-bold mb-4">Company</h3>
               <ul className="space-y-2">
@@ -95,8 +96,8 @@ export default function Footer() {
                 </li>
                 <li>
                   <motion.div variants={linkVariants} whileHover="hover">
-                    <Link href="/work" className="text-white/60 hover:text-white transition-colors">
-                      Work
+                    <Link href="/products" className="text-white/60 hover:text-white transition-colors">
+                      Products
                     </Link>
                   </motion.div>
                 </li>
@@ -116,6 +117,7 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
+            */}
 
             <div>
               <h3 className="font-bold mb-4">Legal</h3>

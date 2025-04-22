@@ -19,6 +19,17 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
+  // Redirect /work to /products
+  if (url.pathname === '/work') {
+    return NextResponse.redirect(new URL('/products', url));
+  }
+  
+  // Redirect /work/[slug] to /products/[slug]
+  if (url.pathname.startsWith('/work/')) {
+    const newPath = url.pathname.replace('/work/', '/products/');
+    return NextResponse.redirect(new URL(newPath, url));
+  }
+
   // Allow other requests to proceed
   return NextResponse.next();
 }

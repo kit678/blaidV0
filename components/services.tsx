@@ -42,13 +42,16 @@ export default function Services() {
   const scrollAnimations = services.map(() => useScrollAnimation(0.1))
 
   return (
-    <section id="capabilities" className="py-20 md:py-32 bg-white text-black overflow-hidden">
+    <section
+      id="capabilities"
+      className="py-16 md:py-32 bg-white text-black overflow-hidden"
+    >
       <div ref={containerRef} className="container mx-auto px-4 md:px-16">
-        <div className="grid md:grid-cols-2 gap-16 items-start">
-          <motion.div style={{ x: leftX, opacity }}>
+        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
+          <motion.div style={{ opacity }}>
             <div>
               <h2 className="text-2xl md:text-3xl font-bold mb-4">Strategic Innovation</h2>
-              <p className="text-lg md:text-xl mb-8 max-w-md">
+              <p className="text-lg md:text-xl mb-6 md:mb-8 max-w-md">
                 We introduce methodologies, processes, and frameworks to drive innovation initiatives and organizational
                 transformation.
               </p>
@@ -69,14 +72,14 @@ export default function Services() {
           </motion.div>
 
           <motion.div style={{ x: rightX, opacity }}>
-            <p className="text-xl md:text-3xl font-light mb-12 max-w-xl">
+            <p className="text-xl md:text-3xl font-light mb-8 md:mb-12 max-w-xl">
               We are an innovation consulting firm that collaborates with organizations to develop strategies,
               capabilities, and cultures that drive sustainable growth.
             </p>
           </motion.div>
         </div>
 
-        <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="mt-16 md:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => {
             const { ref, isInView } = scrollAnimations[index]
             return (

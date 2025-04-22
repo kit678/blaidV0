@@ -48,15 +48,19 @@ export default function AboutSection() {
   // --- Image Reveal Animations (based on PINNED progress) ---
   const imageRevealProgress = smoothPinnedScrollProgress // Alias for clarity
 
-  // Image 1 Reveal (0% to 33% of pinned scroll)
+  // Image 1 Reveal (0% to 33% of pinned scroll) - Tech Startup City Skyline
   const img1Opacity = useTransform(imageRevealProgress, [0, 0.33], [0, 1])
   const img1Y = useTransform(imageRevealProgress, [0, 0.33], [50, 0])
+  // Blur Image 1 when Image 2 starts revealing
+  const img1Blur = useTransform(imageRevealProgress, [0.33, 0.5], [0, 8]) // Blur from 0px to 8px
 
-  // Image 2 Reveal (33% to 66% of pinned scroll)
+  // Image 2 Reveal (33% to 66% of pinned scroll) - AI Startup Funding
   const img2Opacity = useTransform(imageRevealProgress, [0.33, 0.66], [0, 1])
-  const img2Y = useTransform(imageRevealProgress, [0.33, 0.66], [50, 0])
+  const img2X = useTransform(imageRevealProgress, [0.33, 0.66], [50, 0]) // Slide from right (50px) to center (0px)
+  // Blur Image 2 when Image 3 starts revealing
+  const img2Blur = useTransform(imageRevealProgress, [0.66, 0.83], [0, 8]) // Blur from 0px to 8px
 
-  // Image 3 Reveal (66% to 100% of pinned scroll)
+  // Image 3 Reveal (66% to 100% of pinned scroll) - AI Market Growth
   const img3Opacity = useTransform(imageRevealProgress, [0.66, 1], [0, 1])
   const img3Y = useTransform(imageRevealProgress, [0.66, 1], [50, 0])
 
@@ -107,40 +111,55 @@ export default function AboutSection() {
               className="relative"
               style={{ opacity: useTransform(imageRevealProgress, [0, 0.1], [0, 1]) }}
             >
-              <div className="relative h-[400px] md:h-[500px] w-full">
+              <div className="relative h-[500px] md:h-[650px] -mx-4 md:-mx-8">
                 <motion.div
                   className="absolute inset-0 z-10"
-                  style={{ opacity: img1Opacity, y: img1Y }}
+                  style={{
+                    opacity: img1Opacity,
+                    y: img1Y,
+                    filter: useTransform(img1Blur, v => `blur(${v}px)`), // Apply blur
+                  }}
                 >
                   <Image
-                    src="/placeholder.svg?height=500&width=500&text=Team Photo 1"
-                    alt="Team at Blaide"
+                    src="/infographic/Tech Startup City Skyline.png"
+                    alt="Stylized city skyline representing tech startups"
                     fill
-                    className="object-cover rounded-lg shadow-lg"
+                    className="object-contain rounded-lg"
+                    priority // Load first image eagerly
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </motion.div>
 
                 <motion.div
-                  className="absolute inset-0 z-20 translate-x-6 -translate-y-6"
-                  style={{ opacity: img2Opacity, y: img2Y }}
+                  className="absolute inset-0 z-20" // Removed translate classes, using motion values
+                  style={{
+                    opacity: img2Opacity,
+                    x: img2X, // Use x transform for right-to-left
+                    filter: useTransform(img2Blur, v => `blur(${v}px)`), // Apply blur
+                  }}
                 >
                   <Image
-                    src="/placeholder.svg?height=500&width=500&text=Team Photo 2"
-                    alt="Team at Blaide"
+                    src="/infographic/AI Startup Funding in 2023.png"
+                    alt="Infographic showing AI startup funding trends in 2023"
                     fill
-                    className="object-cover rounded-lg shadow-lg"
+                    className="object-contain rounded-lg"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </motion.div>
 
                 <motion.div
-                  className="absolute inset-0 z-30 -translate-x-6 translate-y-6"
-                  style={{ opacity: img3Opacity, y: img3Y }}
+                  className="absolute inset-0 z-30" // Removed translate classes, using motion values
+                  style={{
+                    opacity: img3Opacity,
+                    y: img3Y,
+                  }}
                 >
                   <Image
-                    src="/placeholder.svg?height=500&width=500&text=Team Photo 3"
-                    alt="Team at Blaide"
+                    src="/infographic/AI Market Growth Projection 2030.png"
+                    alt="Infographic projecting AI market growth to 2030"
                     fill
-                    className="object-cover rounded-lg shadow-lg"
+                    className="object-contain rounded-lg"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </motion.div>
               </div>

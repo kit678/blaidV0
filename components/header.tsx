@@ -12,7 +12,7 @@ import { usePathname } from 'next/navigation'
 
 const mainNavLinks = [
   { href: "/#services", label: "Services" },
-  { href: "/work", label: "Work" },
+  { href: "/products", label: "Products" },
 ]
 
 const researchNavLinks = [

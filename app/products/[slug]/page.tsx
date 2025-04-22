@@ -301,7 +301,7 @@ export default function ProductPage() {
           <h1 className="text-3xl font-bold mb-4">Product not found</h1>
           <p className="mb-8">The product you're looking for doesn't exist or has been moved.</p>
           <Link
-            href="/work"
+            href="/products"
             className="inline-flex items-center bg-black text-white px-6 py-3 rounded-full font-medium"
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to all products
@@ -329,7 +329,7 @@ export default function ProductPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50"></div>
         <div className="container mx-auto px-4 md:px-16 h-full flex items-end">
           <div className="pb-12 text-white">
-            <Link href="/work" className="inline-flex items-center text-white/90 hover:text-white transition-colors mb-6">
+            <Link href="/products" className="inline-flex items-center text-white/90 hover:text-white transition-colors mb-6">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to all products
             </Link>
             <h1 className="text-4xl md:text-6xl font-bold mb-4">{product.title}</h1>
@@ -409,7 +409,7 @@ export default function ProductPage() {
           <h2 className="text-2xl font-bold mb-8 text-center">More Products</h2>
           <div className="flex flex-col md:flex-row justify-between">
             {prevProduct && (
-              <Link href={`/work/${prevProduct.slug}`} className="group mb-8 md:mb-0">
+              <Link href={`/products/${prevProduct.slug}`} className="group mb-8 md:mb-0">
                 <div className="flex items-center">
                   <ArrowLeft className="mr-2 h-5 w-5 group-hover:-translate-x-2 transition-transform" />
                   <div>
@@ -421,7 +421,7 @@ export default function ProductPage() {
             )}
 
             {nextProduct && (
-              <Link href={`/work/${nextProduct.slug}`} className="group text-right">
+              <Link href={`/products/${nextProduct.slug}`} className="group text-right">
                 <div className="flex items-center justify-end">
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Next Product</p>
@@ -436,4 +436,4 @@ export default function ProductPage() {
       </div>
     </div>
   )
-}
+} 

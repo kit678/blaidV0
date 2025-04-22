@@ -1,43 +1,31 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { useState, useEffect, useRef } from "react"
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
+
+// Define the image paths
+const images = [
+  "/hero/synapse.webp",
+  "/hero/architecture.webp",
+  "/hero/wave.webp",
+  "/hero/transformation.webp",
+]
 
 export default function Hero() {
-  const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLElement>(null)
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   // Parallax effect for scroll
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 500], [0, 150])
 
+  // Effect for image carousel rotation
   useEffect(() => {
-    const videoElement = videoRef.current
+    const intervalId = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
+    }, 10000) // 10 seconds interval
 
-    if (videoElement) {
-      // Only attempt to play when the video is ready
-      const playVideo = () => {
-        videoElement.play().catch((error) => {
-          // Silently handle the abort error
-          if (error.name !== "AbortError") {
-            console.error("Video playback error:", error)
-          }
-        })
-      }
-
-      // Play when the video data is loaded enough to start playing
-      videoElement.addEventListener("canplay", playVideo)
-
-      // If the video is already loaded, try to play it
-      if (videoElement.readyState >= 3) {
-        playVideo()
-      }
-
-      // Clean up event listener on component unmount
-      return () => {
-        videoElement.removeEventListener("canplay", playVideo)
-      }
-    }
+    return () => clearInterval(intervalId) // Cleanup interval on unmount
   }, [])
 
   // Staggered animation variants
@@ -92,20 +80,24 @@ export default function Hero() {
 
   return (
     <section ref={containerRef} className="relative h-screen flex items-center overflow-hidden bg-black">
+      {/* Background Image Carousel */}
       <div className="absolute inset-0 z-0">
-        <motion.div style={{ y }}>
-          <video
-            ref={videoRef}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover opacity-50"
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={currentIndex} // Important for AnimatePresence to detect changes
+            style={{
+              y, // Apply parallax
+              backgroundImage: `url(${images[currentIndex]})`,
+            }}
+            className="absolute inset-0 bg-cover bg-center"
+            initial={{ opacity: 0, filter: 'brightness(0.5)', scale: 1.1 }} // Start dimmed and slightly scaled up
+            animate={{ opacity: 0.5, filter: 'brightness(1)', scale: 1, transition: { duration: 1.5, ease: "easeOut" } }} // Animate to brighter and normal scale
+            exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeIn" } }} // Fade out
           >
-            <source src="/videos/hero-background.mp4" type="video/mp4" />
-          </video>
-        </motion.div>
+            {/* Optional: Add a subtle overlay if needed */}
+            {/* <div className="absolute inset-0 bg-black/30"></div> */}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <div className="container mx-auto px-4 md:px-16 relative z-10">

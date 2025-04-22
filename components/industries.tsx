@@ -19,42 +19,42 @@ const industries = [
 // Updated data structure with actual image paths
 const industryApplications: { [key: string]: { title: string; image?: string }[] } = {
   "01": [ // Technology
-    { title: "AI Code Generation & Review", image: "/industries/Neon Code on Circuit Backdrop.png" },
-    { title: "Automated Software Testing", image: "/industries/Abstract Digital Architecture in Purple Light.png" },
-    { title: "Synthetic Data Generation", image: "/industries/Converging Data Streams and Core.png" },
-    { title: "Intelligent UX Prototyping", image: "/industries/Neon Purple Wireframe Interface Design.png" },
+    { title: "AI Code Generation & Review", image: "/industries/Neon Code on Circuit Backdrop.webp" },
+    { title: "Automated Software Testing", image: "/industries/Abstract Digital Architecture in Purple Light.webp" },
+    { title: "Synthetic Data Generation", image: "/industries/Converging Data Streams and Core.webp" },
+    { title: "Intelligent UX Prototyping", image: "/industries/Neon Purple Wireframe Interface Design.webp" },
   ],
   "02": [ // Healthcare
-    { title: "Drug Discovery Acceleration", image: "/industries/Molecular Connections in Purple Light.png" },
-    { title: "Personalized Patient Plans", image: "/industries/Progress Tracker with Glowing Accents.png" },
-    { title: "Medical Image Diagnostics Aid", image: "/industries/Brain Scan with Purple Lesion.png" },
-    { title: "Automated Clinical Notes", image: "/industries/Waveform to Data Transformation.png" },
+    { title: "Drug Discovery Acceleration", image: "/industries/Molecular Connections in Purple Light.webp" },
+    { title: "Personalized Patient Plans", image: "/industries/Progress Tracker with Glowing Accents.webp" },
+    { title: "Medical Image Diagnostics Aid", image: "/industries/Brain Scan with Purple Lesion.webp" },
+    { title: "Automated Clinical Notes", image: "/industries/Waveform to Data Transformation.webp" },
   ],
   "03": [ // Financial Services
-    { title: "Algorithmic Trading Insights", image: "/industries/Upward Momentum_ Financial Chart Analysis.png" },
-    { title: "Fraud Detection Patterns", image: "/industries/Network of Glowing Connections.png" },
-    { title: "Personalized Financial Advice", image: "/industries/Financial Growth Dashboard in Purple Glow.png" },
-    { title: "Automated Risk Assessment", image: "/industries/Purple Highlight on Grayscale Grid.png" },
+    { title: "Algorithmic Trading Insights", image: "/industries/Upward Momentum_ Financial Chart Analysis.webp" },
+    { title: "Fraud Detection Patterns", image: "/industries/Network of Glowing Connections.webp" },
+    { title: "Personalized Financial Advice", image: "/industries/Financial Growth Dashboard in Purple Glow.webp" },
+    { title: "Automated Risk Assessment", image: "/industries/Purple Highlight on Grayscale Grid.webp" },
   ],
   "04": [ // Manufacturing
-    { title: "Predictive Maintenance", image: "/industries/Glowing Gear in Dark Framework.png" },
-    { title: "Supply Chain Optimization", image: "/industries/Neon Supply Route Network.png" }
+    { title: "Predictive Maintenance", image: "/industries/Glowing Gear in Dark Framework.webp" },
+    { title: "Supply Chain Optimization", image: "/industries/Neon Supply Route Network.webp" }
   ],
   "05": [ // Retail & Consumer
-    { title: "Personalized Marketing", image: "/industries/Network of Connections and Glowing Links.png" },
-    { title: "Dynamic Pricing Models", image: "/industries/Fluctuating Data with Glowing Highlights.png" }
+    { title: "Personalized Marketing", image: "/industries/Network of Connections and Glowing Links.webp" },
+    { title: "Dynamic Pricing Models", image: "/industries/Fluctuating Data with Glowing Highlights.webp" }
   ],
   "06": [ // Energy & Sustainability
-    { title: "Energy Grid Optimization", image: "/industries/Electric Grid with Glowing Purple Line.png" },
-    { title: "Materials Discovery", image: "/industries/Glowing Lattice on Dark Background.png" }
+    { title: "Energy Grid Optimization", image: "/industries/Electric Grid with Glowing Purple Line.webp" },
+    { title: "Materials Discovery", image: "/industries/Glowing Lattice on Dark Background.webp" }
   ],
   "07": [ // Education
-    { title: "Adaptive Learning Platforms", image: "/industries/Branching Pathway with Glowing Purple Route.png" },
-    { title: "Automated Grading", image: "/industries/Geometric Document with Purple Highlights.png" }
+    { title: "Adaptive Learning Platforms", image: "/industries/Branching Pathway with Glowing Purple Route.webp" },
+    { title: "Automated Grading", image: "/industries/Geometric Document with Purple Highlights.webp" }
   ],
   "08": [ // Public Sector
-    { title: "Policy Simulation", image: "/industries/Abstract Network of Purple Waves.png" },
-    { title: "Resource Allocation AI", image: "/industries/Glowing Map of Resources and Paths.png" }
+    { title: "Policy Simulation", image: "/industries/Abstract Network of Purple Waves.webp" },
+    { title: "Resource Allocation AI", image: "/industries/Glowing Map of Resources and Paths.webp" }
   ],
 }
 
@@ -169,8 +169,8 @@ export default function Industries() {
                           applications.map((app, index) => (
                             <div 
                               key={index} 
-                              className="relative flex-shrink-0 w-64 h-40 rounded-lg overflow-hidden group/card shadow-md cursor-pointer industry-card-rounded"
-                              style={{ borderRadius: '0.5rem', overflow: 'hidden' }}
+                              className="relative flex-shrink-0 w-56 sm:w-64 aspect-[4/3] group/card shadow-md transition-transform duration-300 ease-in-out group-hover/card:scale-105" 
+                              style={{ borderRadius: '0.5rem', overflow: 'hidden' }} 
                             >
                               {app.image && (
                                 <Image
@@ -178,7 +178,9 @@ export default function Industries() {
                                   alt={`${app.title} background`}
                                   fill
                                   className="object-cover transition-all duration-300 ease-in-out filter brightness-75 group-hover/card:brightness-100"
-                                  sizes="256px"
+                                  sizes="(max-width: 640px) 224px, 256px"
+                                  placeholder="blur"
+                                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkrAkAAKcArepgAlAAAAAASUVORK5CYII="
                                 />
                               )}
                               <div className="absolute inset-0 flex items-center justify-center p-4 bg-black/40 transition-colors duration-300 group-hover/card:bg-black/20">
