@@ -81,12 +81,12 @@ export default function AboutSection() {
                 scale: textScale,
               }}
             >
-              <h2 className="text-3xl md:text-5xl font-bold mb-8 flex items-baseline gap-2">
+              <h2 className="text-2xl md:text-5xl font-bold mb-6 md:mb-8 flex items-baseline gap-2 mt-8">
                 <span className="tabular-nums">{displayPercent}%</span>
                 <span>better every day</span>
               </h2>
 
-              <motion.p className="text-lg mb-8">
+              <motion.p className="text-base md:text-lg mb-6 md:mb-8">
                 At Blaide, we believe in continuous improvement and the compound effect of small, daily advancements. Our
                 team of strategists, designers, and technologists work together to help organizations navigate complexity
                 and drive meaningful change.
@@ -95,7 +95,7 @@ export default function AboutSection() {
               <motion.div>
                 <Link href="/about">
                   <motion.span
-                    className="inline-block bg-black text-white py-3 px-8 rounded-full font-medium hover:bg-black/80 transition-colors"
+                    className="inline-block bg-black text-white py-2 px-6 md:py-3 md:px-8 rounded-full font-medium hover:bg-black/80 transition-colors"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -111,7 +111,7 @@ export default function AboutSection() {
               className="relative"
               style={{ opacity: useTransform(imageRevealProgress, [0, 0.1], [0, 1]) }}
             >
-              <div className="relative h-[500px] md:h-[650px] -mx-4 md:-mx-8">
+              <div className="relative h-[350px] md:h-[650px] mx-0 md:-mx-8">
                 <motion.div
                   className="absolute inset-0 z-10"
                   style={{

@@ -62,7 +62,7 @@ export default function Footer() {
     <footer className="bg-black text-white pt-16 pb-8 relative">
       <div className="container mx-auto px-4 md:px-16">
         <div className="flex flex-col md:flex-row justify-between mb-16">
-          <div className="flex flex-col mb-8 md:mb-0">
+          <div className="flex flex-col items-center mb-8 md:mb-0 md:items-start">
             <Link href={isResearchPage ? "/research" : "/"} className="inline-block mb-2">
               <Image
                 src={logoSrc}
@@ -73,53 +73,17 @@ export default function Footer() {
               />
             </Link>
             <motion.a
-              href="mailto:info@blaide.com"
+              href="mailto:info@blaidelabs.com"
               className="text-white/80 hover:text-white transition-colors"
               whileHover={{ x: 0 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              info@blaide.com
+              info@blaidelabs.com
             </motion.a>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            {/* Remove the Company column div
-            <div>
-              <h3 className="font-bold mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li>
-                  <motion.div variants={linkVariants} whileHover="hover">
-                    <Link href="/about" className="text-white/60 hover:text-white transition-colors">
-                      About
-                    </Link>
-                  </motion.div>
-                </li>
-                <li>
-                  <motion.div variants={linkVariants} whileHover="hover">
-                    <Link href="/products" className="text-white/60 hover:text-white transition-colors">
-                      Products
-                    </Link>
-                  </motion.div>
-                </li>
-                <li>
-                  <motion.div variants={linkVariants} whileHover="hover">
-                    <Link href="/blog" className="text-white/60 hover:text-white transition-colors">
-                      Blog
-                    </Link>
-                  </motion.div>
-                </li>
-                <li>
-                  <motion.div variants={linkVariants} whileHover="hover">
-                    <Link href="/careers" className="text-white/60 hover:text-white transition-colors">
-                      Careers
-                    </Link>
-                  </motion.div>
-                </li>
-              </ul>
-            </div>
-            */}
-
-            <div>
+            <div className="text-center md:text-left">
               <h3 className="font-bold mb-4">Legal</h3>
               <ul className="space-y-2">
                 <li>
@@ -146,9 +110,9 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div>
+            <div className="text-center md:text-left">
               <h3 className="font-bold mb-4">Follow Us</h3>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 justify-center md:justify-start">
                 <motion.a
                   href="https://twitter.com/blaide"
                   target="_blank"

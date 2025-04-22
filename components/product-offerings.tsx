@@ -97,15 +97,18 @@ interface OfferingDetailCardProps {
 }
 
 function OfferingDetailCard({ offering, getTypeColor, isMobile }: OfferingDetailCardProps) {
-  const cardPadding = isMobile ? "p-6" : "p-8";
-  const titleSize = isMobile ? "text-2xl" : "text-2xl md:text-3xl";
+  // Adjust padding for mobile to be smaller to prevent overflow
+  const cardPadding = isMobile ? "p-4" : "p-8";
+  const titleSize = isMobile ? "text-xl" : "text-2xl md:text-3xl";
   const descriptionSize = isMobile ? "text-base" : "text-lg";
-  const featureListStyle = isMobile ? "space-y-2 mb-6 text-sm" : "space-y-3 mb-8";
+  const featureListStyle = isMobile ? "space-y-2 mb-4 text-sm" : "space-y-3 mb-8";
   const featureIconSize = isMobile ? "h-4 w-4" : "h-5 w-5";
   const featureIconMargin = isMobile ? "mr-2 mt-0.5" : "mr-3 mt-1";
-  const buttonPadding = isMobile ? "py-3 px-6" : "py-3 px-8";
-  const buttonContainerStyle = isMobile ? "mt-auto pt-4" : ""; // Desktop doesn't need mt-auto
-  const buttonWidth = isMobile ? "w-full" : ""; // Keep w-full for mobile for consistent look?
+  // Adjusted button padding to be smaller on mobile
+  const buttonPadding = isMobile ? "py-2 px-4" : "py-3 px-8";
+  const buttonContainerStyle = isMobile ? "mt-auto pt-2" : ""; // Reduced padding-top
+  // Make the button auto-width on mobile instead of full width
+  const buttonWidth = isMobile ? "" : ""; // Removed w-full for mobile
 
   return (
     <div className={`bg-white border border-gray-200 ${cardPadding} rounded-xl shadow-sm h-full flex flex-col`}>
@@ -113,19 +116,19 @@ function OfferingDetailCard({ offering, getTypeColor, isMobile }: OfferingDetail
       <div className={`w-16 h-1 mb-4 ${isMobile ? 'md:mb-6' : 'mb-6'} rounded flex-shrink-0`} style={{ backgroundColor: offering.color }}></div>
       
       {/* Title */}
-      <h3 className={`${titleSize} font-bold mb-3 text-gray-900 break-words`}>{offering.title}</h3>
+      <h3 className={`${titleSize} font-bold mb-2 text-gray-900 break-words`}>{offering.title}</h3>
       
       {/* Type & Tagline */}
-      <div className="mb-4 flex flex-wrap gap-2 items-center">
+      <div className="mb-3 flex flex-wrap gap-2 items-center">
           <span className={`inline-block px-2 py-1 text-xs rounded-full ${getTypeColor(offering.type)}`}>{offering.type}</span>
           {offering.tagline && <span className="text-xs text-gray-500">{offering.tagline}</span>}
       </div>
       
       {/* Description */}
-      <p className={`${descriptionSize} text-gray-700 ${isMobile ? 'mb-6' : 'mb-8'} break-words`}>{offering.description}</p>
+      <p className={`${descriptionSize} text-gray-700 ${isMobile ? 'mb-4' : 'mb-8'} break-words`}>{offering.description}</p>
       
       {/* Features */}
-      <h4 className="text-md font-semibold mb-3 text-gray-900">What's included:</h4>
+      <h4 className="text-md font-semibold mb-2 text-gray-900">What's included:</h4>
       <ul className={featureListStyle}>
           {offering.features.map((feature, featureIndex) => (
               <li key={featureIndex} className="flex items-start">
@@ -139,7 +142,6 @@ function OfferingDetailCard({ offering, getTypeColor, isMobile }: OfferingDetail
       <div className={buttonContainerStyle}> 
           <Link
               href="/contact"
-              // Note: Removed w-full from previous attempt. Re-adding for mobile consistency, check layout.
               className={`inline-block ${buttonWidth} text-center bg-black text-white ${buttonPadding} rounded-full font-medium hover:bg-black/80 transition-colors`}
           >
                {/* Added motion span back for consistency with desktop button */}
@@ -296,7 +298,7 @@ export default function ProductOfferings() {
             <div className="md:hidden">
               <div
                   ref={scrollContainerRef}
-                  className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mb-4 scrollbar-hide -mx-4" // Keep negative margin
+                  className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mb-4 scrollbar-hide -mx-4 px-4" // Added px-4 to balance negative margins
                   onScroll={handleScroll}
               >
                   {offerings.map((offering, index) => {
@@ -305,7 +307,7 @@ export default function ProductOfferings() {
                           <div // Item Wrapper
                               key={offering.id}
                               ref={setRef}
-                              className="min-w-full flex-shrink-0 snap-center" // No padding here
+                              className="min-w-full flex-shrink-0 snap-center pr-4" // Added right padding to ensure space between cards
                           >
                               {/* Use the reusable card component */}
                               <OfferingDetailCard 
