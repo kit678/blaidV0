@@ -12,6 +12,12 @@ body {
   }
 }
 
+/* Fix for industry cards rounded corners */
+.industry-card-rounded {
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

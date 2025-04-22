@@ -8,51 +8,61 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { usePathname } from 'next/navigation'
 
-const navLinks = [
+const mainNavLinks = [
   { href: "/#services", label: "Services" },
   { href: "/work", label: "Work" },
 ]
 
+const researchNavLinks = [
+  { href: "/research#focus", label: "Focus" },
+  { href: "/research#abstracts", label: "Abstracts" },
+]
+
+const mainLogoSrc = "/logos/logov7.svg"
+const researchLogoSrc = "/logos/logov8Research.svg"
+
 export default function Header() {
+  const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
-  // Handle scroll event to change header appearance
+  const isResearchPage = pathname === '/view-research' || pathname.startsWith('/research/')
+
+  const logoSrc = isResearchPage ? researchLogoSrc : mainLogoSrc
+  const currentNavLinks = isResearchPage ? researchNavLinks : mainNavLinks
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
     }
-
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Handle smooth scrolling for anchor links
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Only handle anchor links on the same page
     if (href.startsWith("/#")) {
-      e.preventDefault()
-      const targetId = href.replace("/#", "")
-
-      // If it's just the home link (/#), scroll to top
-      if (!targetId) {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        })
-        return
+      if (pathname === '/') {
+        e.preventDefault()
+        const targetId = href.replace("/#", "")
+        if (!targetId) {
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        } else {
+          const targetElement = document.getElementById(targetId)
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth" })
+          }
+        }
+        if (isMenuOpen) {
+          setIsMenuOpen(false)
+        }
+      } else {
+        if (isMenuOpen) {
+          setIsMenuOpen(false)
+        }
       }
-
-      // Otherwise scroll to the specific section
-      const targetElement = document.getElementById(targetId)
-      if (targetElement) {
-        targetElement.scrollIntoView({
-          behavior: "smooth",
-        })
-      }
-
-      // Close mobile menu if open
+    } else {
       if (isMenuOpen) {
         setIsMenuOpen(false)
       }
@@ -65,19 +75,20 @@ export default function Header() {
         isScrolled ? "bg-black/90 backdrop-blur-md py-4" : "bg-transparent py-8"
       }`}
     >
-      <div className="flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-white">
+      <div className="container mx-auto flex items-center justify-between">
+        <Link href={isResearchPage ? "/research" : "/"} className="flex items-center gap-2 text-white">
           <Image
-            src="/logov3.svg"
-            alt="Blaide Logo"
-            width={100}
+            src={logoSrc}
+            alt={isResearchPage ? "Blaide Research Logo" : "Blaide Logo"}
+            width={isResearchPage ? 150 : 100}
             height={32}
             className="filter invert"
+            priority
           />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {currentNavLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -87,42 +98,47 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/contact"
+            className="text-white/80 hover:text-white transition-colors"
+            onClick={(e) => handleAnchorClick(e, "/contact")}
+          >
+            Contact
+          </Link>
         </nav>
 
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <Button variant="outline" size="icon" className="md:hidden text-white border-white/50 hover:bg-white/10 hover:text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <span className="sr-only">Toggle menu</span>
         </Button>
       </div>
 
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 w-full bg-black/95 backdrop-blur-md p-6 md:hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="absolute top-full left-0 w-full bg-black/95 backdrop-blur-md md:hidden overflow-hidden"
           >
-            <nav className="flex flex-col gap-4">
-              {navLinks.map((link) => (
+            <nav className="flex flex-col gap-2 p-6">
+              {currentNavLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-white/80 hover:text-white transition-colors py-2"
-                  onClick={(e) => {
-                    handleAnchorClick(e, link.href)
-                    setIsMenuOpen(false)
-                  }}
+                  className="text-white/80 hover:text-white transition-colors py-3 text-lg"
+                  onClick={(e) => handleAnchorClick(e, link.href)}
                 >
                   {link.label}
                 </Link>
               ))}
               <Link
-                href="/contact"
-                className="mt-4 bg-white text-black py-3 px-6 rounded-full text-center font-medium"
-                onClick={() => setIsMenuOpen(false)}
+                href={isResearchPage ? "/research#contact" : "/contact"}
+                className="mt-4 bg-white text-black py-3 px-6 rounded-full text-center font-medium text-lg"
+                onClick={(e) => handleAnchorClick(e, isResearchPage ? "/research#contact" : "/contact")}
               >
-                Contact Us
+                {isResearchPage ? "Contact Research" : "Contact Us"}
               </Link>
             </nav>
           </motion.div>

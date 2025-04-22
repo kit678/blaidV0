@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow creating documents in the contact_messages collection
+    match /contact_messages/{document=**} {
+      allow create: if true;
+      // If you need read/update/delete later, add rules here.
+      // Example: allow read: if request.auth != null;
+    }
+    
+    // Allow creating documents in the research_contact_messages collection
+    match /research_contact_messages/{document=**} {
+      allow create: if true;
+      // Add other rules (read, update, delete) as needed.
+    }
+  }
+} 

@@ -4,19 +4,19 @@ import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import Image from "next/image"
 
-// Updated clients array with actual logo paths
+// Updated clients array with actual logo paths and URLs
 const clients = [
-  { name: "Morgan Stanley", logo: "/clients/morgan.svg" },
-  { name: "Manipal", logo: "/clients/manipal.svg" },
-  { name: "Tata", logo: "/clients/tata-logo.svg" },
-  { name: "Baruch", logo: "/clients/baruch.svg" },
-  { name: "Delta Airlines", logo: "/clients/delta-airlines.svg" },
-  { name: "Pivoton", logo: "/clients/pivoton.svg" },
-  { name: "Citrix", logo: "/clients/citrix.svg" },
-  { name: "Illinois University", logo: "/clients/illinois-university-2.svg" },
-  { name: "Stevens Institute", logo: "/clients/stevens-institute-of-technology.svg" },
-  { name: "Credit Suisse", logo: "/clients/credit-suisse-1.svg" },
-  { name: "IBM", logo: "/clients/ibm.svg" },
+  { name: "Morgan Stanley", logo: "/clients/morgan.svg", url: "https://www.morganstanley.com" },
+  { name: "Manipal", logo: "/clients/manipal.svg", url: "https://www.manipal.edu" },
+  { name: "Tata", logo: "/clients/tata-logo.svg", url: "https://www.tata.com" },
+  { name: "Baruch", logo: "/clients/baruch.svg", url: "https://www.baruch.cuny.edu" },
+  { name: "Delta Airlines", logo: "/clients/delta-airlines.svg", url: "https://www.delta.com" },
+  { name: "Pivoton", logo: "/clients/pivoton.svg", url: "https://www.linkedin.com/company/pivoton-capital/" },
+  { name: "Citrix", logo: "/clients/citrix.svg", url: "https://www.citrix.com" },
+  { name: "Illinois University", logo: "/clients/illinois-university-2.svg", url: "https://illinois.edu" },
+  { name: "Stevens Institute", logo: "/clients/stevens-institute-of-technology.svg", url: "https://www.stevens.edu" },
+  { name: "Credit Suisse", logo: "/clients/credit-suisse-1.svg", url: "https://www.credit-suisse.com" },
+  { name: "IBM", logo: "/clients/ibm.svg", url: "https://www.ibm.com" },
   // Add any other clients here following the pattern
 ]
 
@@ -69,23 +69,32 @@ export default function ClientsSection() {
               : "h-10 md:h-12"; // Default height for others
 
             return (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                // Make the container slightly taller to accommodate the potentially larger Stevens logo
-                className={`flex items-center justify-center p-2 grayscale hover:grayscale-0 transition-all duration-300 ${isStevensLogo ? 'h-16' : 'h-14 md:h-16'}`} // Adjust container height
+              // Wrap the motion.div with an anchor tag
+              <a
+                key={client.name} // Use a more stable key like name or URL
+                href={client.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Link to ${client.name} website`} // Add accessibility label
               >
-                <Image
-                  src={client.logo}
-                  alt={client.name}
-                  width={160} // Keep base width/height for Next.js
-                  height={isStevensLogo ? 56 : 48} // Adjust base height slightly for Stevens
-                  // Apply conditional height class and existing classes
-                  className={`${logoHeightClass} w-auto object-contain`}
-                />
-              </motion.div>
+                <motion.div
+                  // No key needed here as it's on the parent anchor
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  // Make the container slightly taller to accommodate the potentially larger Stevens logo
+                  className={`flex items-center justify-center p-2 grayscale hover:grayscale-0 transition-all duration-300 ${isStevensLogo ? 'h-16' : 'h-14 md:h-16'}`} // Adjust container height
+                >
+                  <Image
+                    src={client.logo}
+                    alt={client.name} // Alt text remains descriptive of the logo itself
+                    width={160} // Keep base width/height for Next.js
+                    height={isStevensLogo ? 56 : 48} // Adjust base height slightly for Stevens
+                    // Apply conditional height class and existing classes
+                    className={`${logoHeightClass} w-auto object-contain`}
+                  />
+                </motion.div>
+              </a>
             );
           })}
         </motion.div>

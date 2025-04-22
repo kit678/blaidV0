@@ -10,18 +10,34 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { CheckIcon, ArrowRight } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
+import { addContactMessage } from "@/lib/firebase"
+
+interface FormData {
+  services: string[];
+  timeline: string;
+  budget: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  message: string;
+}
 
 export default function ContactPage() {
+  const { toast } = useToast()
   const [step, setStep] = useState(1)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     services: [],
     timeline: "",
     budget: "",
     name: "",
     email: "",
+    phone: "",
     company: "",
     message: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   const handleServiceToggle = (service: string) => {
@@ -40,11 +56,39 @@ export default function ContactPage() {
     })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would normally send the data to your backend
-    console.log(formData)
-    setIsSubmitted(true)
+    
+    try {
+      setIsSubmitting(true)
+      
+      // Send data to API endpoint
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to send message')
+      }
+      
+      // Show success state
+      setIsSubmitted(true)
+      
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      toast({
+        title: "Error",
+        description: "There was a problem sending your message. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const services = [
@@ -221,11 +265,23 @@ export default function ContactPage() {
                     </div>
 
                     <div>
+                      <Label htmlFor="phone">Phone number</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        placeholder="Optional"
+                      />
+                    </div>
+
+                    <div>
                       <Label htmlFor="company">Company name</Label>
                       <Input
                         id="company"
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                        placeholder="Optional"
                       />
                     </div>
 
@@ -236,6 +292,7 @@ export default function ContactPage() {
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         rows={4}
+                        placeholder="Optional"
                       />
                     </div>
                   </div>
@@ -247,9 +304,9 @@ export default function ContactPage() {
                     <Button
                       type="submit"
                       className="bg-black text-white hover:bg-black/80"
-                      disabled={!formData.name || !formData.email}
+                      disabled={!formData.name || !formData.email || isSubmitting}
                     >
-                      Submit
+                      {isSubmitting ? "Submitting..." : "Submit"}
                     </Button>
                   </div>
                 </motion.div>
@@ -280,6 +337,7 @@ export default function ContactPage() {
                   budget: "",
                   name: "",
                   email: "",
+                  phone: "",
                   company: "",
                   message: "",
                 })
