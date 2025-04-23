@@ -132,6 +132,18 @@ export default function Hero() {
               Get in Touch
             </motion.a>
           </motion.div>
+
+          {/* Add the link to the research site here */}
+          <motion.div variants={itemVariants} className="mt-6">
+            <a
+              href="#" // Replace # with the actual URL for Blaide Research
+              className="text-white/70 hover:text-white transition-colors text-sm"
+              target="_blank" // Optional: open in new tab
+              rel="noopener noreferrer" // Optional: security for new tab
+            >
+              Looking for our foundational research? <span className="underline">Visit Blaide Research</span>
+            </a>
+          </motion.div>
         </motion.div>
       </div>
 
