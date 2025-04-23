@@ -30,6 +30,17 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(newPath, url));
   }
 
+  // Target internal path for the research content
+  const researchInternalPath = '/research-content';
+
+  // Check if the request is for the research domain's root
+  if (hostname === RESEARCH_HOSTNAME && url.pathname === '/') {
+    // Rewrite the request to the internal research page path
+    // The URL in the browser remains research.bladelabs.com/
+    console.log(`Rewriting ${hostname}${url.pathname} to ${researchInternalPath}`); // Optional logging
+    return NextResponse.rewrite(new URL(researchInternalPath, url));
+  }
+
   // Allow other requests to proceed
   return NextResponse.next();
 }

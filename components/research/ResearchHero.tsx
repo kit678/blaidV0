@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"; // Assuming cn utility exists for class mergin
  */
 interface ResearchHeroProps {}
 
-const backgroundImage = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3';
+const backgroundImage = '/images/unsplash/photo-1611974789855-9c2a0a7236a3.webp';
 
 /**
  * Hero section component for the Research subdomain.

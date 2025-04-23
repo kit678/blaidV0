@@ -27,20 +27,6 @@ const ResearchApproachAndFindingsComponent: React.FC<ResearchApproachAndFindings
         {/* Centered content container */}
         <div className="max-w-4xl mx-auto">
 
-          {/* --- Part 1: Differentiator Content --- */}
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-gray-900 dark:text-white">
-            Our Differentiator: Synthesizing Price, Time & Geometry
-          </h2>
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-            Conventional analysis often treats price action, time cycles, and chart patterns in isolation. Blaide Research integrates these dimensions, positing that markets unfold according to a quantifiable geometric and temporal structure.
-          </p>
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-12"> {/* Added more bottom margin */}
-            Our methodology moves beyond statistical inference to identify deterministic patterns based on fixed time cycles, geometric proportions, and price-time equivalencies, revealing a deeper layer of market order.
-          </p>
-
-          {/* Optional Divider */}
-          <hr className="my-12 border-gray-200 dark:border-gray-700" />
-
           {/* --- Part 2: Abstract Content --- */}
           <h3 className="text-2xl md:text-3xl font-semibold text-center mb-6 text-gray-900 dark:text-white">
             Illustrative Abstract

@@ -96,7 +96,7 @@ export default function ContactPage() {
     "Digital Transformation",
     "Design Thinking",
     "Future Foresight",
-    "Implement an idea",
+    "Implement an Idea",
     "All of the above",
   ]
 
