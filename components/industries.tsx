@@ -138,9 +138,9 @@ export default function Industries() {
                   onClick={() => handleToggle(industry.id)}
                 >
                   <div className="flex items-baseline gap-4">
-                    <span className="text-sm text-white/60 w-6 text-center">
+                    {/* <span className="text-sm text-white/60 w-6 text-center">
                       {industry.id}
-                    </span>
+                    </span> */}
                     <span className="text-xl md:text-2xl font-light group-hover:text-white transition-colors duration-200">
                       {industry.title}
                     </span>

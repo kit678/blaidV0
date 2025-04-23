@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import Image from "next/image"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -19,14 +19,13 @@ const products = [
       "An AI-powered chatbot using GPT-4o to provide instant, intelligent customer support, reducing wait times and improving satisfaction.",
   },
   {
-    title: "ContentForge AI",
-    client: "Marketing",
-    tags: ["Content Generation", "Multi-format", "SEO"],
-    image: "https://images.unsplash.com/photo-1606857521015-7f9fcf423740",
-    color: "#10B981",
-    slug: "contentforge-ai",
-    description:
-      "Generate high-quality marketing content in multiple formats, optimized for SEO, driving engagement and organic growth.",
+    title: "DocuMind Analyzer",
+    client: "Document Intelligence",
+    tags: ["Document Analysis", "Knowledge Graphs", "Research"],
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85",
+    color: "#F59E0B",
+    slug: "documind-analyzer",
+    description: "Extract key information and build knowledge graphs from complex documents to accelerate research and analysis.",
   },
   {
     title: "InsightPulse",
@@ -39,13 +38,14 @@ const products = [
       "Transform raw data into actionable insights with powerful visualization tools and predictive analytics capabilities.",
   },
   {
-    title: "DocuMind Analyzer",
-    client: "Document Intelligence",
-    tags: ["Document Analysis", "Knowledge Graphs", "Research"],
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85",
-    color: "#F59E0B",
-    slug: "documind-analyzer",
-    description: "Extract key information and build knowledge graphs from complex documents to accelerate research and analysis.",
+    title: "ContentForge AI",
+    client: "Marketing",
+    tags: ["Content Generation", "Multi-format", "SEO"],
+    image: "https://images.unsplash.com/photo-1606857521015-7f9fcf423740",
+    color: "#10B981",
+    slug: "contentforge-ai",
+    description:
+      "Generate high-quality marketing content in multiple formats, optimized for SEO, driving engagement and organic growth.",
   },
   {
     title: "NarrativeCraft",
@@ -91,6 +91,13 @@ export default function FeaturedWork() {
   const { scrollYProgress: overallScrollProgress } = useScroll({
     target: featuredSectionWrapperRef, // Target the tall wrapper
     offset: ["start center", "end end"] // Start tracking when top hits viewport center
+  });
+
+  // Create the smoothed scroll progress value
+  const smoothScrollProgress = useSpring(overallScrollProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
   });
 
   // Black section initial slide-up
@@ -150,7 +157,7 @@ export default function FeaturedWork() {
 
             // --- Image Animation ---
             const imgY = useTransform(
-              overallScrollProgress,
+              smoothScrollProgress, // Use smoothed value
               [entryStart, entryEnd, exitStart, exitEnd],
               ["100%", "0%", "0%", "-100%"]
             );
@@ -161,21 +168,21 @@ export default function FeaturedWork() {
             const descEntryEnd = entryEnd;
             const descXEntryValues = isLeftAligned ? ["100%", "0%"] : ["-100%", "0%"];
             const descX = useTransform(
-              overallScrollProgress,
+              smoothScrollProgress, // Use smoothed value
               [descEntryStart, descEntryEnd, exitStart, exitEnd],
               [descXEntryValues[0], descXEntryValues[1], "0%", "0%"]
             );
 
             // Define vertical movement for description, matching the image
             const descY = useTransform(
-              overallScrollProgress,
+              smoothScrollProgress, // Use smoothed value
               [entryStart, entryEnd, exitStart, exitEnd], // Same ranges as image
               ["100%", "0%", "0%", "-100%"]             // Same vertical motion as image
             );
 
              // --- Opacity Animation ---
              const opacity = useTransform(
-                 overallScrollProgress,
+                 smoothScrollProgress, // Use smoothed value
                  [entryStart, entryStart + 0.1, exitEnd - 0.1, exitEnd],
                  [0, 1, 1, 0]
              );
@@ -279,7 +286,7 @@ export default function FeaturedWork() {
                  ref={buttonRef}
                  className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20"
                  style={{
-                     opacity: useTransform(overallScrollProgress, [(NUM_PRODUCTS - 1) / NUM_PRODUCTS, 0.95], [0, 1])
+                     opacity: useTransform(smoothScrollProgress, [(NUM_PRODUCTS - 1) / NUM_PRODUCTS, 0.95], [0, 1]) // Use smoothed value
                  }}
              >
                  <Link href="/products">

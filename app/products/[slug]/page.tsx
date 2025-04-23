@@ -317,35 +317,64 @@ export default function ProductPage() {
   const nextProduct = currentIndex < productsData.length - 1 ? productsData[currentIndex + 1] : null
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <div className="h-[50vh] relative" style={{ backgroundColor: product.color }}>
+    <div className="min-h-screen pb-16">
+      <section className="relative h-[60vh] md:h-[75vh] flex items-end pb-16 md:pb-24 text-white overflow-hidden">
         <Image
           src={product.backgroundImage || "/placeholder.svg"}
-          alt={product.title}
+          alt={`${product.title} background`}
           fill
-          className="object-cover opacity-70"
           priority
+          className="object-cover z-[-10]"
+          sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50"></div>
-        <div className="container mx-auto px-4 md:px-16 h-full flex items-end">
-          <div className="pb-12 text-white">
-            <Link href="/products" className="inline-flex items-center text-white/90 hover:text-white transition-colors mb-6">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to all products
-            </Link>
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">{product.title}</h1>
-            <p className="text-xl text-white/80">{product.client}</p>
-          </div>
+        <div className="absolute inset-0 bg-black/50 z-0" />
+
+        <div className="container mx-auto px-4 md:px-16 relative z-10">
+          <motion.div
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.1, duration: 0.6 }}
+          >
+            <div className="flex flex-col items-start gap-3 mb-6">
+              <Link
+                href="/products"
+                className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors group"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+                Back to Products
+              </Link>
+              <p className="text-lg font-medium" style={{ color: product.color || "#FFFFFF" }}>
+                {product.client}
+              </p>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                {product.title}
+              </h1>
+            </div>
+            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mt-4">
+              {product.preview}
+            </p>
+          </motion.div>
         </div>
-      </div>
+      </section>
 
       <div className="container mx-auto px-4 md:px-16 py-16">
+        <div className="mb-12 md:mb-16">
+          <Link
+            href="/products"
+            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors group"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+            Back to Products
+          </Link>
+        </div>
+
         <div className="grid md:grid-cols-3 gap-16">
           <div className="md:col-span-2">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <h2 className="text-2xl md:text-3xl font-bold mb-6">Overview</h2>
               <p className="text-lg mb-8">{product.description}</p>
 
-              <div className="relative rounded-lg overflow-hidden mb-12 aspect-video">
+              <div className="relative rounded-2xl overflow-hidden mb-12 aspect-video">
                 <Image
                   src={product.detailImage || "/placeholder.svg"}
                   alt={`${product.title} detail`}
@@ -363,7 +392,7 @@ export default function ProductPage() {
                 ))}
               </ul>
 
-              <h2 className="text-2xl md:text-3xl font-bold mb-6">Benefits</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6">Value Proposition</h2>
               <ul className="list-disc pl-6 mb-12 space-y-2">
                 {product.benefits.map((benefit: string, index: number) => (
                   <li key={index} className="text-lg">
@@ -381,7 +410,7 @@ export default function ProductPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="sticky top-32"
             >
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-8">
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 mb-8">
                 <h3 className="text-xl font-bold mb-4">Product Details</h3>
                 <div className="space-y-4">
                   <div>
@@ -397,9 +426,20 @@ export default function ProductPage() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-full bg-black text-white px-6 py-3 font-medium"
+                className="inline-flex items-center justify-center rounded-full px-6 py-3 font-medium w-full text-center transition-colors mb-4 
+                           bg-black text-white hover:bg-gray-800 
+                           dark:bg-white dark:text-black dark:hover:bg-gray-200"
               >
                 Discuss a similar product
+              </Link>
+              
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center rounded-full border px-6 py-3 font-medium w-full text-center transition-colors 
+                           border-black text-black bg-transparent hover:bg-gray-100 
+                           dark:border-white dark:text-white dark:hover:bg-gray-700"
+              >
+                Schedule a Demo
               </Link>
             </motion.div>
           </div>

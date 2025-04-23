@@ -52,6 +52,9 @@ export default function ClientsSection() {
   return (
     <section ref={sectionRef} className="py-20 bg-white text-black overflow-hidden">
       <div className="container mx-auto px-4 md:px-16">
+        <h2 className="text-xl md:text-2xl font-light text-center mb-12 md:mb-16">
+          Affiliations
+        </h2>
         <motion.div
           variants={containerVariants}
           initial="hidden"

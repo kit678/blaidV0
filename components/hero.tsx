@@ -78,6 +78,11 @@ export default function Hero() {
     },
   }
 
+  // Determine research URL based on environment
+  const researchUrl = process.env.NODE_ENV === 'production'
+    ? 'https://research.bladelabs.com' 
+    : '/view-research'; // Use relative path for local dev
+
   return (
     <section ref={containerRef} className="relative h-screen flex items-center overflow-hidden bg-black">
       {/* Background Image Carousel */}
@@ -136,10 +141,10 @@ export default function Hero() {
           {/* Add the link to the research site here */}
           <motion.div variants={itemVariants} className="mt-6">
             <a
-              href="#" // Replace # with the actual URL for Blaide Research
+              href={researchUrl} // Use the conditional URL
               className="text-white/70 hover:text-white transition-colors text-sm"
-              target="_blank" // Optional: open in new tab
-              rel="noopener noreferrer" // Optional: security for new tab
+              target="_blank" // Open in new tab (useful for external production link)
+              rel="noopener noreferrer" 
             >
               Looking for our foundational research? <span className="underline">Visit Blaide Research</span>
             </a>
