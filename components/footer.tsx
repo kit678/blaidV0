@@ -5,13 +5,17 @@ import Link from "next/link"
 import Image from "next/image"
 import { Twitter, Linkedin, Instagram, ArrowUp } from "lucide-react"
 import { useState, useEffect } from "react"
-import { usePathname } from 'next/navigation'
 
-export default function Footer() {
+// Define props including the new variant
+interface FooterProps {
+  variant: 'main' | 'research';
+}
+
+export default function Footer({ variant }: FooterProps) { // Accept variant prop
   const [showScrollTop, setShowScrollTop] = useState(false)
-  const pathname = usePathname()
 
-  const isResearchPage = pathname === '/view-research' || pathname.startsWith('/research/')
+  // Determine content based on the passed variant prop
+  const isResearchPage = variant === 'research';
 
   const mainLogoSrc = "/logos/logov7.svg"
   const researchLogoSrc = "/logos/logov8Research.svg"
@@ -19,6 +23,8 @@ export default function Footer() {
   const logoAlt = isResearchPage ? "Blaide Research Logo" : "Blaide Logo"
   const logoWidth = isResearchPage ? 150 : 120
   const logoHeight = 40
+  const logoHref = isResearchPage ? "/" : "/"; // Both link to root of their respective domains
+  const email = isResearchPage ? "research@blaidelabs.com" : "info@blaidelabs.com";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,7 +69,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-16">
         <div className="flex flex-col md:flex-row justify-between mb-16">
           <div className="flex flex-col items-center mb-8 md:mb-0 md:items-start">
-            <Link href={isResearchPage ? "/research" : "/"} className="inline-block mb-2">
+            <Link href={logoHref} className="inline-block mb-2">
               <Image
                 src={logoSrc}
                 alt={logoAlt}
@@ -73,12 +79,12 @@ export default function Footer() {
               />
             </Link>
             <motion.a
-              href="mailto:info@blaidelabs.com"
+              href={`mailto:${email}`}
               className="text-white/80 hover:text-white transition-colors"
-              whileHover={{ x: 0 }}
+              whileHover={{ x: 0 }} // Simplified hover effect for email
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              info@blaidelabs.com
+              {email}
             </motion.a>
           </div>
 

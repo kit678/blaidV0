@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+import { headers } from 'next/headers'
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -19,18 +20,26 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const headersList = headers()
+  const host = headersList.get('host')
+
+  const RESEARCH_HOSTNAME = 'research.blaidelabs.com';
+
+  const variant = host === RESEARCH_HOSTNAME
+    ? 'research'
+    : 'main';
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <Header />
+          {/* @ts-ignore TODO: Add variant prop to Header component */}
+          <Header variant={variant} />
           <main className="min-h-screen">{children}</main>
-          <Footer />
+          {/* @ts-ignore TODO: Add variant prop to Footer component */}
+          <Footer variant={variant} />
         </ThemeProvider>
       </body>
     </html>
   )
 }
-
-
-import './globals.css'

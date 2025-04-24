@@ -8,7 +8,12 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { usePathname } from 'next/navigation'
+// import { usePathname } from 'next/navigation' // No longer needed for variant logic
+
+// Define props including the new variant
+interface HeaderProps {
+  variant: 'main' | 'research';
+}
 
 const mainNavLinks = [
   { href: "/#services", label: "Services" },
@@ -16,22 +21,28 @@ const mainNavLinks = [
 ]
 
 const researchNavLinks = [
-  { href: "/research#focus", label: "Focus" },
-  { href: "/research#abstracts", label: "Abstracts" },
+  { href: "#focus", label: "Focus" }, // Changed to relative hash links within research page
+  { href: "#abstracts", label: "Abstracts" }, // Changed to relative hash links
 ]
 
 const mainLogoSrc = "/logos/logov7.svg"
 const researchLogoSrc = "/logos/logov8Research.svg"
 
-export default function Header() {
-  const pathname = usePathname()
+export default function Header({ variant }: HeaderProps) { // Accept variant prop
+  // const pathname = usePathname() // Remove pathname usage
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
-  const isResearchPage = pathname === '/view-research' || pathname.startsWith('/research/')
+  // Determine content based on the passed variant prop
+  const isResearchPage = variant === 'research';
 
   const logoSrc = isResearchPage ? researchLogoSrc : mainLogoSrc
   const currentNavLinks = isResearchPage ? researchNavLinks : mainNavLinks
+  const logoHref = isResearchPage ? "/" : "/"; // Both link to root of their respective domains
+  const contactHref = isResearchPage ? "#contact" : "/contact"; // Hash link for research, path for main
+  const contactLabel = isResearchPage ? "Contact Research" : "Contact Us";
+  const logoAlt = isResearchPage ? "Blaide Research Logo" : "Blaide Logo"
+  const logoWidth = isResearchPage ? 150 : 100
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,8 +53,20 @@ export default function Header() {
   }, [])
 
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("/#")) {
-      if (pathname === '/') {
+    // Check if it's a hash link *within the current page*
+    if (href.startsWith("#")) {
+      e.preventDefault()
+      const targetId = href.substring(1); // Remove the #
+      const targetElement = document.getElementById(targetId)
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth" })
+      }
+      if (isMenuOpen) {
+        setIsMenuOpen(false)
+      }
+    } 
+    // Check if it's a root hash link for the main page
+    else if (href.startsWith("/#") && variant === 'main') {
         e.preventDefault()
         const targetId = href.replace("/#", "")
         if (!targetId) {
@@ -57,12 +80,8 @@ export default function Header() {
         if (isMenuOpen) {
           setIsMenuOpen(false)
         }
-      } else {
-        if (isMenuOpen) {
-          setIsMenuOpen(false)
-        }
-      }
     } else {
+      // Handle regular navigation or navigation from main page root hashes
       if (isMenuOpen) {
         setIsMenuOpen(false)
       }
@@ -76,11 +95,11 @@ export default function Header() {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between">
-        <Link href={isResearchPage ? "/research" : "/"} className="flex items-center gap-2 text-white">
+        <Link href={logoHref} className="flex items-center gap-2 text-white">
           <Image
             src={logoSrc}
-            alt={isResearchPage ? "Blaide Research Logo" : "Blaide Logo"}
-            width={isResearchPage ? 150 : 100}
+            alt={logoAlt}
+            width={logoWidth}
             height={32}
             className="filter invert"
             priority
@@ -99,11 +118,11 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="/contact"
+            href={contactHref}
             className="text-white/80 hover:text-white transition-colors"
-            onClick={(e) => handleAnchorClick(e, "/contact")}
+            onClick={(e) => handleAnchorClick(e, contactHref)}
           >
-            Contact
+            {contactLabel}
           </Link>
         </nav>
 
@@ -134,11 +153,11 @@ export default function Header() {
                 </Link>
               ))}
               <Link
-                href={isResearchPage ? "/research#contact" : "/contact"}
+                href={contactHref}
                 className="mt-4 bg-white text-black py-3 px-6 rounded-full text-center font-medium text-lg"
-                onClick={(e) => handleAnchorClick(e, isResearchPage ? "/research#contact" : "/contact")}
+                onClick={(e) => handleAnchorClick(e, contactHref)}
               >
-                {isResearchPage ? "Contact Research" : "Contact Us"}
+                {contactLabel}
               </Link>
             </nav>
           </motion.div>
