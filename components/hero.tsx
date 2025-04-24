@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
+import Link from "next/link"
 
 // Define the image paths
 const images = [
@@ -118,15 +119,21 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
-            <motion.a
-              href="/services"
+            <motion.button
+              onClick={(e) => {
+                e.preventDefault() // Prevent any default button behavior
+                const servicesSection = document.getElementById("services")
+                if (servicesSection) {
+                  servicesSection.scrollIntoView({ behavior: "smooth" })
+                }
+              }}
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
-              className="bg-white text-black py-3 px-8 rounded-full inline-block font-medium hover:bg-white/90 transition-colors"
+              className="bg-white text-black py-3 px-8 rounded-full inline-block font-medium hover:bg-white/90 transition-colors cursor-pointer"
             >
               Our Services
-            </motion.a>
+            </motion.button>
             <motion.a
               href="/contact"
               variants={buttonVariants}
