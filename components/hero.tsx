@@ -80,7 +80,7 @@ export default function Hero() {
 
   // Determine research URL based on environment
   const researchUrl = process.env.NODE_ENV === 'production'
-    ? 'https://research.bladelabs.com' 
+    ? 'https://research.blaidelabs.com' 
     : '/view-research'; // Use relative path for local dev
 
   return (

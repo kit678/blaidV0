@@ -36,7 +36,7 @@ export function middleware(request: NextRequest) {
   // Check if the request is for the research domain's root
   if (hostname === RESEARCH_HOSTNAME && url.pathname === '/') {
     // Rewrite the request to the internal research page path
-    // The URL in the browser remains research.bladelabs.com/
+    // The URL in the browser remains research.blaidelabs.com/
     console.log(`Rewriting ${hostname}${url.pathname} to ${researchInternalPath}`); // Optional logging
     return NextResponse.rewrite(new URL(researchInternalPath, url));
   }
