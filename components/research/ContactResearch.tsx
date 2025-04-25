@@ -176,7 +176,11 @@ export const ContactResearch: React.FC<ContactResearchProps> = (props) => {
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
                         <SelectValue placeholder="Select reason for contact..." />
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg">
+                      <SelectContent 
+                        position="popper" 
+                        sideOffset={5} 
+                        className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg z-50"
+                      >
                         <SelectItem value="schedule_demo" className="py-2">Schedule a Demonstration</SelectItem>
                         <SelectItem value="data_access" className="py-2">Data Access Inquiry</SelectItem>
                         <SelectItem value="investment_ops" className="py-2">Investment Opportunities</SelectItem>
@@ -209,7 +213,11 @@ export const ContactResearch: React.FC<ContactResearchProps> = (props) => {
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
                         <SelectValue placeholder="Select reason for contact..." />
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg">
+                      <SelectContent 
+                        position="popper" 
+                        sideOffset={5} 
+                        className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg z-50"
+                      >
                         <SelectItem value="collaboration" className="py-2">Collaboration Inquiry</SelectItem>
                         <SelectItem value="whitepaper" className="py-2">Whitepaper Questions</SelectItem>
                         <SelectItem value="methodology" className="py-2">Methodology Inquiry</SelectItem>
