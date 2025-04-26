@@ -8,10 +8,16 @@ import { headers } from 'next/headers'
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata = {
-  title: "Blaide | Innovation Consulting",
+  title: "Blaide | Innovation Labs",
   description:
     "Blaide innovation labs - Transforming ideas into impactful solutions through strategic innovation consulting.",
-    generator: 'v0.dev'
+  generator: 'v0.dev',
+  icons: {
+    icon: {
+      url: '/logos/logoIcon.png',
+      type: 'image/png',
+    },
+  },
 }
 
 const RESEARCH_HOSTNAME = 'research.blaidelabs.com';

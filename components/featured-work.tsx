@@ -95,7 +95,7 @@ export default function FeaturedWork() {
 
   // Create the smoothed scroll progress value
   const smoothScrollProgress = useSpring(overallScrollProgress, {
-    stiffness: 100,
+    stiffness: 300,
     damping: 30,
     restDelta: 0.001
   });
@@ -151,7 +151,7 @@ export default function FeaturedWork() {
 
             // Define animation ranges *within* this segment
             const entryStart = segmentStart;
-            const entryEnd = segmentStart + (segmentEnd - segmentStart) * 0.4; // Entry takes 40%
+            const entryEnd = segmentStart + (segmentEnd - segmentStart) * 0.2; // Entry takes 20% (was 0.4)
             const exitStart = entryEnd;
             const exitEnd = segmentEnd;
 
@@ -164,8 +164,8 @@ export default function FeaturedWork() {
 
 
             // --- Description Animation ---
-            const descEntryStart = segmentStart + (segmentEnd - segmentStart) * 0.1; // Start slightly after image
-            const descEntryEnd = entryEnd;
+            const descEntryStart = segmentStart + (segmentEnd - segmentStart) * 0.05; // Start slightly earlier (was 0.1)
+            const descEntryEnd = entryEnd; // Align end with image entry end
             const descXEntryValues = isLeftAligned ? ["100%", "0%"] : ["-100%", "0%"];
             const descX = useTransform(
               smoothScrollProgress, // Use smoothed value
@@ -183,7 +183,7 @@ export default function FeaturedWork() {
              // --- Opacity Animation ---
              const opacity = useTransform(
                  smoothScrollProgress, // Use smoothed value
-                 [entryStart, entryStart + 0.1, exitEnd - 0.1, exitEnd],
+                 [entryStart, entryStart + 0.05, exitEnd - 0.05, exitEnd], // Faster fade in/out (was 0.1)
                  [0, 1, 1, 0]
              );
 
