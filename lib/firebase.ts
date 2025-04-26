@@ -1,6 +1,7 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { ResearchContactFormData } from './research-email-templates';
+import { config } from '@/lib/config';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -23,49 +24,32 @@ if (!getApps().length) {
 
 const db = getFirestore(app);
 
-// Contact form types
+// Define the structure of the contact form data
 export interface ContactFormData {
-  services: string[];
   timeline: string;
   budget: string;
   name: string;
   email: string;
-  phone?: string;
-  company?: string;
-  message?: string;
-  created_at?: Timestamp;
-  created_at_readable?: string;
-  is_read?: boolean;
+  phone: string;
+  company: string;
+  message: string;
+  intent: string | null;
+  product: string | null;
+  service: string | null;
 }
 
-// Function to add a contact form submission to Firestore
-export async function addContactMessage(message: ContactFormData) {
+// Function to add a contact message to Firestore
+export async function addContactMessage(formData: ContactFormData): Promise<void> {
   try {
-    // Create a timestamp for the current time
-    const timestamp = serverTimestamp();
-    
-    // Create a human-readable date string
-    const now = new Date();
-    const readableDate = now.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZoneName: 'short'
+    const contactsCollection = collection(db, 'contacts');
+    await addDoc(contactsCollection, {
+      ...formData, // Spread all form data
+      timestamp: serverTimestamp(), // Add a server timestamp
     });
-    
-    const docRef = await addDoc(collection(db, 'contact_messages'), {
-      ...message,
-      created_at: timestamp,             // Firestore timestamp for sorting
-      created_at_readable: readableDate, // Human-readable format
-      is_read: false
-    });
-    return docRef.id;
+    console.log('Contact message successfully added to Firestore');
   } catch (error) {
-    console.error('Error adding document to Firestore:', error);
-    throw error;
+    console.error('Error adding contact message to Firestore:', error);
+    throw new Error('Failed to store contact message');
   }
 }
 

@@ -152,13 +152,15 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href={contactHref}
-                className="mt-4 bg-white text-black py-3 px-6 rounded-full text-center font-medium text-lg"
-                onClick={(e) => handleAnchorClick(e, contactHref)}
+              <Button 
+                asChild 
+                variant="primary-pill" 
+                size="pill" 
+                className="mt-4 text-center text-lg"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleAnchorClick(e as any, contactHref)}
               >
-                {contactLabel}
-              </Link>
+                <Link href={contactHref}>{contactLabel}</Link>
+              </Button>
             </nav>
           </motion.div>
         )}

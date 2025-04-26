@@ -6,6 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowLeft, ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 // Product data
 const productsData = [
@@ -424,23 +425,23 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-full px-6 py-3 font-medium w-full text-center transition-colors mb-4 
-                           bg-black text-white hover:bg-gray-800 
-                           dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              <Button 
+                asChild 
+                variant="dark-pill"
+                size="pill" 
+                className="w-full mb-4"
               >
-                Discuss a similar product
-              </Link>
+                 <Link href={`/contact?intent=general&product=${product.slug}`}>Discuss a similar product</Link>
+              </Button>
               
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-full border px-6 py-3 font-medium w-full text-center transition-colors 
-                           border-black text-black bg-transparent hover:bg-gray-100 
-                           dark:border-white dark:text-white dark:hover:bg-gray-700"
+              <Button 
+                asChild 
+                variant="outline"
+                size="pill" 
+                className="w-full border-black text-black dark:border-white dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                Schedule a Demo
-              </Link>
+                 <Link href={`/contact?intent=demo&product=${product.slug}`}>Schedule a Demo</Link>
+               </Button>
             </motion.div>
           </div>
         </div>

@@ -37,12 +37,22 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Generate a more informative subject line based on intent
+    let subject = 'New Contact Form Submission';
+    if (body.intent === 'demo' && body.product) {
+      subject = `Demo Request: ${body.product.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
+    } else if (body.intent === 'service_inquiry' && body.service) {
+      subject = `Service Inquiry: ${body.service.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
+    } else if (body.name) {
+        subject += ` from ${body.name}`
+    }
     
     const { data: adminEmailData, error: adminEmailError } = await resend.emails.send({
       from: `Blaide Contact Form <${config.email.contactEmail}>`,
       to: adminEmail,
       replyTo: body.email,
-      subject: `New Contact Form Submission: ${body.services.join(', ')}`,
+      subject: subject,
       html: generateAdminEmailHtml(body),
     });
 

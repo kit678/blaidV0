@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 // Define the image paths
 const images = [
@@ -119,7 +120,7 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
-            <motion.button
+            <Button
               onClick={(e) => {
                 e.preventDefault() // Prevent any default button behavior
                 const servicesSection = document.getElementById("services")
@@ -127,22 +128,19 @@ export default function Hero() {
                   servicesSection.scrollIntoView({ behavior: "smooth" })
                 }
               }}
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              className="bg-white text-black py-3 px-8 rounded-full inline-block font-medium hover:bg-white/90 transition-colors cursor-pointer"
+              variant="primary-pill"
+              size="pill"
+              className="cursor-pointer"
             >
               Our Services
-            </motion.button>
-            <motion.a
-              href="/contact"
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              className="border border-white text-white py-3 px-8 rounded-full inline-block font-medium hover:bg-white/10 transition-colors"
+            </Button>
+            <Button
+              asChild
+              variant="outline-pill"
+              size="pill"
             >
-              Get in Touch
-            </motion.a>
+              <Link href="/contact">Get in Touch</Link>
+            </Button>
           </motion.div>
 
           {/* Add the link to the research site here */}

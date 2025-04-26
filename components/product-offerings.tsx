@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence, useInView, MotionProps, Variants } from "framer-motion"
 import { ArrowRight, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 const offerings = [
   {
@@ -140,15 +141,20 @@ function OfferingDetailCard({ offering, getTypeColor, isMobile }: OfferingDetail
       
       {/* Button */}
       <div className={buttonContainerStyle}> 
-          <Link
-              href="/contact"
-              className={`inline-block ${buttonWidth} text-center bg-black text-white ${buttonPadding} rounded-full font-medium hover:bg-black/80 transition-colors`}
-          >
-               {/* Added motion span back for consistency with desktop button */}
-               <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }} className="inline-block">
-                    Inquire about this service
-                </motion.span>
-          </Link>
+          {/* Use Button component */}
+           <Button 
+             asChild 
+             variant="dark-pill" 
+             size="pill" 
+             className={`inline-block ${buttonWidth} text-center`} // Simplified classes
+           > 
+             <Link href={`/contact?intent=service_inquiry&service=${offering.id}`}>
+                {/* Keep motion span if needed, Button might handle hover/tap differently */}
+                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }} className="inline-block">
+                     Inquire about this service
+                 </motion.span>
+             </Link>
+           </Button>
       </div>
     </div>
   );
