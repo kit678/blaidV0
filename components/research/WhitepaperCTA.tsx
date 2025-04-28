@@ -15,8 +15,8 @@ interface WhitepaperCTAProps {
  * @param props - The props for the component.
  * @returns The rendered whitepaper CTA section.
  */
-export const WhitepaperCTA: React.FC<WhitepaperCTAProps> = ({ whitepaperUrl = '#' }) => {
-  // Use '#' as placeholder if no URL is provided
+export const WhitepaperCTA: React.FC<WhitepaperCTAProps> = ({ whitepaperUrl = '/BlaideResearchWhitePaper.pdf' }) => {
+  // Use '/BlaideResearchWhitePaper.pdf' as default URL
 
   return (
     <section className="py-16 md:py-24 w-full bg-gradient-to-r from-slate-800 to-gray-900 text-white">

@@ -17,8 +17,8 @@ interface ResearchApproachAndFindingsProps {
  * @param props - The props for the component.
  * @returns The rendered combined section.
  */
-const ResearchApproachAndFindingsComponent: React.FC<ResearchApproachAndFindingsProps> = ({ whitepaperUrl = '#' }) => {
-  // Use '#' as placeholder if no URL is provided
+const ResearchApproachAndFindingsComponent: React.FC<ResearchApproachAndFindingsProps> = ({ whitepaperUrl = '/BlaideResearchWhitePaper.pdf' }) => {
+  // Use '/BlaideResearchWhitePaper.pdf' as default URL
 
   return (
     // Using bg-white dark:bg-gray-800 like the original Differentiator section
