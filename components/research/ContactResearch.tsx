@@ -177,8 +177,6 @@ export const ContactResearch: React.FC<ContactResearchProps> = (props) => {
                         <SelectValue placeholder="Select reason for contact..." />
                       </SelectTrigger>
                       <SelectContent 
-                        position="popper" 
-                        sideOffset={5} 
                         className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg z-50"
                       >
                         <SelectItem value="schedule_demo" className="py-2">Schedule a Demonstration</SelectItem>
@@ -214,8 +212,6 @@ export const ContactResearch: React.FC<ContactResearchProps> = (props) => {
                         <SelectValue placeholder="Select reason for contact..." />
                       </SelectTrigger>
                       <SelectContent 
-                        position="popper" 
-                        sideOffset={5} 
                         className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg z-50"
                       >
                         <SelectItem value="collaboration" className="py-2">Collaboration Inquiry</SelectItem>

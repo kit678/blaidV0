@@ -38,7 +38,7 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
 
   const logoSrc = isResearchPage ? researchLogoSrc : mainLogoSrc
   const currentNavLinks = isResearchPage ? researchNavLinks : mainNavLinks
-  const logoHref = isResearchPage ? "/" : "/"; // Both link to root of their respective domains
+  const logoHref = isResearchPage ? "#" : "/"; // Both link to root of their respective domains
   const contactHref = isResearchPage ? "#contact" : "/contact"; // Hash link for research, path for main
   const contactLabel = isResearchPage ? "Contact Research" : "Contact Us";
   const logoAlt = isResearchPage ? "Blaide Research Logo" : "Blaide Logo"
@@ -53,19 +53,25 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
   }, [])
 
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Check if it's a hash link *within the current page*
     if (href.startsWith("#")) {
       e.preventDefault()
-      console.log(`Hash link clicked: ${href}, looking for element with id: ${href.substring(1)}`);
-      
       const targetId = href.substring(1); // Remove the #
-      const targetElement = document.getElementById(targetId)
-      
-      if (targetElement) {
-        console.log(`Found target element, scrolling to it: `, targetElement);
-        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        console.warn(`Target element with id "${targetId}" not found in the DOM`);
+
+      // If href is just "#", scroll to top
+      if (!targetId) { 
+        console.log("Hash link is #, scrolling to top");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } 
+      // Otherwise, find element by ID
+      else { 
+        console.log(`Hash link clicked: ${href}, looking for element with id: ${targetId}`);
+        const targetElement = document.getElementById(targetId)
+        if (targetElement) {
+          console.log(`Found target element, scrolling to it: `, targetElement);
+          targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          console.warn(`Target element with id "${targetId}" not found in the DOM`);
+        }
       }
       
       if (isMenuOpen) {
@@ -102,7 +108,11 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
       }`}
     >
       <div className="container mx-auto flex items-center justify-between">
-        <Link href={logoHref} className="flex items-center gap-2 text-white">
+        <Link 
+          href={logoHref} 
+          className="flex items-center gap-2 text-white"
+          onClick={(e) => handleAnchorClick(e, logoHref)}
+        >
           <Image
             src={logoSrc}
             alt={logoAlt}

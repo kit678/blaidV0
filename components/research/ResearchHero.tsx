@@ -18,7 +18,7 @@ const backgroundImage = '/images/unsplash/photo-1611974789855-9c2a0a7236a3.webp'
  */
 export const ResearchHero: React.FC<ResearchHeroProps> = (props) => {
   return (
-    <section className="relative w-full h-screen overflow-hidden flex items-center bg-black">
+    <section className="relative w-full h-[85vh] md:h-screen overflow-hidden flex items-center bg-black">
       {/* Background Image */}
       <Image
         src={backgroundImage}
