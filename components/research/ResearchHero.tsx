@@ -44,7 +44,9 @@ export const ResearchHero: React.FC<ResearchHeroProps> = (props) => {
           </p>
           <div className="mt-6">
             <Link
-              href="/"
+              href="https://www.blaidelabs.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-white/70 hover:text-white transition-colors text-sm"
             >
               Looking for our main services? <span className="underline">Visit Blaide Labs</span>

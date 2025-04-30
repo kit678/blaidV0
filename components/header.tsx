@@ -56,11 +56,18 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
     // Check if it's a hash link *within the current page*
     if (href.startsWith("#")) {
       e.preventDefault()
+      console.log(`Hash link clicked: ${href}, looking for element with id: ${href.substring(1)}`);
+      
       const targetId = href.substring(1); // Remove the #
       const targetElement = document.getElementById(targetId)
+      
       if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth" })
+        console.log(`Found target element, scrolling to it: `, targetElement);
+        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        console.warn(`Target element with id "${targetId}" not found in the DOM`);
       }
+      
       if (isMenuOpen) {
         setIsMenuOpen(false)
       }
