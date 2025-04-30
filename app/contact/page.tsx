@@ -113,39 +113,45 @@ export default function ContactPage() {
 
         {!isSubmitted ? (
           <div className="bg-white rounded-xl p-6 md:p-10 shadow-lg">
-            <div className="flex mb-8">
-              {[1, 2, 3, 4].map((displayStep, index) => {
-                 // Determine total steps based on intent
-                 const totalSteps = initialIntent === 'demo' ? 1 : (initialIntent === 'service_inquiry' ? 3 : 4);
-                 if (displayStep > totalSteps) return null; // Don't render steps beyond the total for the flow
- 
-                 // Map display steps to actual internal step state values
-                 let actualStep = 0;
-                 if (initialIntent === 'demo') {
-                   actualStep = 3; // Demo only has the contact step (step 3)
-                 } else if (initialIntent === 'service_inquiry') {
-                   actualStep = index + 1; // Service inquiry: 1=Timeline, 2=Budget, 3=Contact
-                 } else {
-                   actualStep = index; // General inquiry: 0=Help, 1=Timeline, 2=Budget, 3=Contact
-                 }
-
-                const isActive = step >= actualStep;
-                const isCompleted = step > actualStep;
-
-                return (
-                  <div key={displayStep} className="flex items-center">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive ? "bg-black text-white" : "bg-gray-200 text-gray-500"}`}
-                    >
-                      {isCompleted ? <CheckIcon className="h-4 w-4" /> : displayStep}
+            {/* Conditionally render the step indicator */} 
+            {initialIntent !== 'demo' && (
+              <div className="flex mb-8">
+                {[1, 2, 3, 4].map((displayStep, index) => {
+                   // Determine total steps based on intent
+                   // For demo, totalSteps was 1, now this section is skipped entirely.
+                   // For service_inquiry, totalSteps = 3
+                   // For general, totalSteps = 4
+                   const totalSteps = initialIntent === 'service_inquiry' ? 3 : 4; 
+                   // Adjust display step condition based on remaining intents
+                   if (initialIntent === 'service_inquiry' && displayStep > totalSteps) return null; 
+                   if (initialIntent === 'general' && displayStep > totalSteps) return null; 
+   
+                   // Map display steps to actual internal step state values
+                   let actualStep = 0;
+                   if (initialIntent === 'service_inquiry') {
+                     actualStep = index + 1; // Service inquiry: 1=Timeline, 2=Budget, 3=Contact
+                   } else { // Must be 'general' if not 'demo' or 'service_inquiry'
+                     actualStep = index; // General inquiry: 0=Help, 1=Timeline, 2=Budget, 3=Contact
+                   }
+  
+                  const isActive = step >= actualStep;
+                  const isCompleted = step > actualStep;
+  
+                  return (
+                    <div key={displayStep} className="flex items-center">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive ? "bg-black text-white" : "bg-gray-200 text-gray-500"}`}
+                      >
+                        {isCompleted ? <CheckIcon className="h-4 w-4" /> : displayStep}
+                      </div>
+                      {displayStep < totalSteps && (
+                        <div className={`h-1 w-16 ${isActive ? "bg-black" : "bg-gray-200"}`}></div>
+                      )}
                     </div>
-                    {displayStep < totalSteps && (
-                      <div className={`h-1 w-16 ${isActive ? "bg-black" : "bg-gray-200"}`}></div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit}>
               {/* STEP 0: How can we help? (General Inquiry Only) */}
@@ -192,9 +198,9 @@ export default function ContactPage() {
                     className="space-y-4 mb-8"
                   >
                     {timelines.map((timeline) => (
-                      <div key={timeline} className="flex items-center space-x-2">
-                        <RadioGroupItem value={timeline} id={timeline} />
-                        <Label htmlFor={timeline}>{timeline}</Label>
+                      <div key={timeline} className="flex items-center space-x-3">
+                        <RadioGroupItem value={timeline} id={timeline} className="border-gray-400 text-black" />
+                        <Label htmlFor={timeline} className="text-black/90">{timeline}</Label>
                       </div>
                     ))}
                   </RadioGroup>
@@ -226,9 +232,9 @@ export default function ContactPage() {
                     className="space-y-4 mb-8"
                   >
                     {budgets.map((budget) => (
-                      <div key={budget} className="flex items-center space-x-2">
-                        <RadioGroupItem value={budget} id={budget} />
-                        <Label htmlFor={budget}>{budget}</Label>
+                      <div key={budget} className="flex items-center space-x-3">
+                        <RadioGroupItem value={budget} id={budget} className="border-gray-400 text-black" />
+                        <Label htmlFor={budget} className="text-black/90">{budget}</Label>
                       </div>
                     ))}
                   </RadioGroup>
@@ -239,7 +245,7 @@ export default function ContactPage() {
                       onClick={() => setStep(1)}
                       variant="outline"
                       size="pill"
-                      className="force-rounded-lg"
+                      className="border-gray-400 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     >
                       Back
                     </Button>
@@ -271,7 +277,7 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         required
-                        className="rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="rounded-lg bg-white text-black border border-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-500"
                       />
                     </div>
 
@@ -283,7 +289,7 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
-                        className="rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="rounded-lg bg-white text-black border border-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-500"
                       />
                     </div>
 
@@ -295,7 +301,7 @@ export default function ContactPage() {
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="Optional"
-                        className="rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="rounded-lg bg-white text-black border border-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-500"
                       />
                     </div>
 
@@ -306,7 +312,7 @@ export default function ContactPage() {
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                         placeholder="Optional"
-                        className="rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="rounded-lg bg-white text-black border border-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-500"
                       />
                     </div>
 
@@ -319,7 +325,7 @@ export default function ContactPage() {
                            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                            rows={4}
                            placeholder="e.g., Feature X, Integration Y, Specific Use Case Z"
-                           className="rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                           className="rounded-lg bg-white text-black border border-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-500"
                          />
                        </div>
                     )}
@@ -328,11 +334,9 @@ export default function ContactPage() {
                   <div className="flex justify-between">
                     <Button 
                       type="button" 
-                      onClick={() => setStep(formData.intent === 'demo' ? 3 : 2)}
-                      variant="outline"
+                      onClick={() => setStep(formData.intent === 'general' ? 2 : (formData.intent === 'service_inquiry' ? 2 : 1))}
                       size="pill"
-                      disabled={formData.intent === 'demo'}
-                      className="force-rounded-lg"
+                      className="bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200"
                     >
                       Back
                     </Button>
