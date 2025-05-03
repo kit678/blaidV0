@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence, useInView, MotionProps, Variants } from "framer-motion"
-import { ArrowRight, CheckCircle2 } from "lucide-react"
+import { ArrowRight, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -164,17 +164,41 @@ function OfferingDetailCard({ offering, getTypeColor, isMobile }: OfferingDetail
 export default function ProductOfferings() {
   const [activeOfferingId, setActiveOfferingId] = useState(offerings[0].id)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
 
   const sectionRef = useRef(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
 
+  // Function to assign refs to the array
+  const assignRef = (index: number) => (el: HTMLDivElement | null) => {
+    itemRefs.current[index] = el;
+  };
+
+  const updateScrollability = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const scrollLeft = container.scrollLeft;
+    const scrollWidth = container.scrollWidth;
+    const offsetWidth = container.offsetWidth;
+
+    setCanScrollLeft(scrollLeft > 5); // Allow some tolerance
+    setCanScrollRight(scrollLeft < scrollWidth - offsetWidth - 5); // Allow some tolerance
+  }, []);
+
   useEffect(() => {
     itemRefs.current = itemRefs.current.slice(0, offerings.length)
-  }, [])
+    // Initial check for scrollability
+    updateScrollability();
 
-  // --- Scroll Handlers (Keep as is) --- 
+    // Add resize listener to re-check scrollability
+    window.addEventListener('resize', updateScrollability);
+    return () => window.removeEventListener('resize', updateScrollability);
+  }, [updateScrollability])
+
+  // --- Scroll Handlers --- 
   const handleScroll = useCallback(() => {
     if (!scrollContainerRef.current || window.innerWidth >= 768) return
     const container = scrollContainerRef.current
@@ -195,13 +219,28 @@ export default function ProductOfferings() {
     if (closestIndex !== currentIndex) {
         setCurrentIndex(closestIndex)
     }
-  }, [currentIndex])
+    // Update scroll button visibility on scroll
+    updateScrollability();
+  }, [currentIndex, updateScrollability])
+
+  const scrollByAmount = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    // Scroll by roughly 85% of the container width
+    const scrollAmount = container.offsetWidth * 0.85 * (direction === 'left' ? -1 : 1);
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  };
 
   const scrollToItem = (index: number) => {
     const item = itemRefs.current[index]
     if (item && scrollContainerRef.current) {
       const container = scrollContainerRef.current
-      const scrollLeft = item.offsetLeft - container.offsetLeft
+      // Calculate scroll position to center the item
+      const containerWidth = container.offsetWidth;
+      const itemWidth = item.offsetWidth;
+      const itemOffsetLeft = item.offsetLeft - container.offsetLeft; // Adjust for container's position
+      const scrollLeft = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
+      
       container.scrollTo({ left: scrollLeft, behavior: 'smooth' })
       setCurrentIndex(index)
     }
@@ -298,35 +337,71 @@ export default function ProductOfferings() {
           </div>
 
           {/* --- Content Area (Handles Mobile Scroll & Desktop Details) --- */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-2 relative">
 
-            {/* --- Mobile Horizontal Scroll Container --- */}
+            {/* --- Mobile Horizontal Scroll --- */}
             <div className="md:hidden">
               <div
-                  ref={scrollContainerRef}
-                  className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mb-4 scrollbar-hide -mx-4 px-4" // Added px-4 to balance negative margins
-                  onScroll={handleScroll}
+                ref={scrollContainerRef}
+                className="flex space-x-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide snap-x snap-mandatory pl-4 pr-4"
+                onScroll={handleScroll}
               >
-                  {offerings.map((offering, index) => {
-                      const setRef = (el: HTMLDivElement | null): void => { itemRefs.current[index] = el; };
-                      return (
-                          <div // Item Wrapper
-                              key={offering.id}
-                              ref={setRef}
-                              className="min-w-full flex-shrink-0 snap-center pr-4" // Added right padding to ensure space between cards
-                          >
-                              {/* Use the reusable card component */}
-                              <OfferingDetailCard 
-                                offering={offering} 
-                                getTypeColor={getTypeColor} 
-                                isMobile={true} 
-                              />
-                          </div>
-                      );
-                  })}
+                {offerings.map((offering, index) => {
+                  // Define setRef inside the map callback to capture the correct index
+                  const setRef = (el: HTMLDivElement | null): void => {
+                    itemRefs.current[index] = el;
+                  };
+                  return (
+                    <div
+                      key={offering.id}
+                      ref={setRef} // Now correctly referencing the function defined above
+                      className="snap-center w-[90vw] flex-shrink-0"
+                      // Make the card itself clickable to focus/scroll
+                      onClick={() => scrollToItem(index)} 
+                    >
+                      {/* Use the reusable card component */}
+                      <OfferingDetailCard
+                        offering={offering}
+                        getTypeColor={getTypeColor}
+                        isMobile={true}
+                      />
+                    </div>
+                  );
+                })}
               </div>
+              {/* --- Mobile Scroll Buttons --- */}
+              <AnimatePresence>
+                {canScrollLeft && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-black rounded-full shadow-md"
+                      onClick={() => scrollByAmount('left')}
+                      aria-label="Scroll left"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {canScrollRight && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-black rounded-full shadow-md"
+                      onClick={() => scrollByAmount('right')}
+                      aria-label="Scroll right"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-              {/* --- Mobile Pagination Dots --- */}
+              {/* --- Mobile Dots Indicator --- */}
               <div className="flex justify-center space-x-2 mt-6">
                 {offerings.map((_, index) => (
                   <button
