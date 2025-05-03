@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Twitter, Linkedin, Instagram, ArrowUp } from "lucide-react"
 import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
 
 // Define props including the new variant
 interface FooterProps {

@@ -115,9 +115,9 @@ export default function ContactPage() {
           <div className="bg-white rounded-xl p-6 md:p-10 shadow-lg">
             {/* Conditionally render the step indicator */} 
             {initialIntent !== 'demo' && (
-              <div className="flex mb-8">
-                {[1, 2, 3, 4].map((displayStep, index) => {
-                   // Determine total steps based on intent
+            <div className="flex mb-8">
+              {[1, 2, 3, 4].map((displayStep, index) => {
+                 // Determine total steps based on intent
                    // For demo, totalSteps was 1, now this section is skipped entirely.
                    // For service_inquiry, totalSteps = 3
                    // For general, totalSteps = 4
@@ -125,32 +125,32 @@ export default function ContactPage() {
                    // Adjust display step condition based on remaining intents
                    if (initialIntent === 'service_inquiry' && displayStep > totalSteps) return null; 
                    if (initialIntent === 'general' && displayStep > totalSteps) return null; 
-   
-                   // Map display steps to actual internal step state values
-                   let actualStep = 0;
+ 
+                 // Map display steps to actual internal step state values
+                 let actualStep = 0;
                    if (initialIntent === 'service_inquiry') {
-                     actualStep = index + 1; // Service inquiry: 1=Timeline, 2=Budget, 3=Contact
+                   actualStep = index + 1; // Service inquiry: 1=Timeline, 2=Budget, 3=Contact
                    } else { // Must be 'general' if not 'demo' or 'service_inquiry'
-                     actualStep = index; // General inquiry: 0=Help, 1=Timeline, 2=Budget, 3=Contact
-                   }
-  
-                  const isActive = step >= actualStep;
-                  const isCompleted = step > actualStep;
-  
-                  return (
-                    <div key={displayStep} className="flex items-center">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive ? "bg-black text-white" : "bg-gray-200 text-gray-500"}`}
-                      >
-                        {isCompleted ? <CheckIcon className="h-4 w-4" /> : displayStep}
-                      </div>
-                      {displayStep < totalSteps && (
-                        <div className={`h-1 w-16 ${isActive ? "bg-black" : "bg-gray-200"}`}></div>
-                      )}
+                   actualStep = index; // General inquiry: 0=Help, 1=Timeline, 2=Budget, 3=Contact
+                 }
+
+                const isActive = step >= actualStep;
+                const isCompleted = step > actualStep;
+
+                return (
+                  <div key={displayStep} className="flex items-center">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive ? "bg-black text-white" : "bg-gray-200 text-gray-500"}`}
+                    >
+                      {isCompleted ? <CheckIcon className="h-4 w-4" /> : displayStep}
                     </div>
-                  )
-                })}
-              </div>
+                    {displayStep < totalSteps && (
+                      <div className={`h-1 w-16 ${isActive ? "bg-black" : "bg-gray-200"}`}></div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
             )}
 
             <form onSubmit={handleSubmit}>

@@ -65,8 +65,8 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
       // Otherwise, find element by ID
       else { 
         console.log(`Hash link clicked: ${href}, looking for element with id: ${targetId}`);
-        const targetElement = document.getElementById(targetId)
-        if (targetElement) {
+      const targetElement = document.getElementById(targetId)
+      if (targetElement) {
           console.log(`Found target element, scrolling to it: `, targetElement);
           targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
         } else {

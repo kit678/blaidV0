@@ -119,15 +119,6 @@ html body[data-scroll-locked] {
   z-index: 1000 !important;
 }
 
-/* For fixed containers that might experience shifting */
-.fixed, 
-.sticky,
-.absolute {
-  width: 100% !important;
-  right: 0 !important;
-  left: 0 !important;
-}
-
 /* Lock elements in place when dropdowns are open */
 /* This targets the specific Select trigger components to prevent movement */
 [role="combobox"] {
