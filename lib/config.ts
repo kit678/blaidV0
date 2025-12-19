@@ -2,8 +2,8 @@
 export const config = {
   email: {
     resendApiKey: process.env.RESEND_API_KEY,
-    contactEmail: process.env.CONTACT_EMAIL || 'noreply@blaide.com',
-    adminEmail: process.env.ADMIN_EMAIL || 'admin@blaide.com',
+    contactEmail: process.env.CONTACT_EMAIL || 'info@blaidelabs.com',
+    adminEmail: process.env.ADMIN_EMAIL || 'admin@blaidelabs.com',
   },
   siteInfo: {
     name: 'Blaide',

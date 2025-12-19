@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { config } from '@/lib/config';
-import { 
-  ResearchContactFormData, 
-  generateResearchAdminEmailHtml, 
-  generateResearchUserEmailHtml 
+import {
+  ResearchContactFormData,
+  generateResearchAdminEmailHtml,
+  generateResearchUserEmailHtml
 } from '@/lib/research-email-templates';
 import { addResearchContactMessage } from '@/lib/firebase';
 
@@ -15,23 +15,76 @@ import { addResearchContactMessage } from '@/lib/firebase';
 export async function POST(request: Request) {
   try {
     // Parse the form data from the request
-    const formData = await request.json() as ResearchContactFormData;
+    const formData = await request.json() as ResearchContactFormData & { website_url?: string; cf_turnstile_response?: string };
     console.log("Received Research Contact Form Data:", formData);
+
+    // 0. Security Checks
+
+    // Honeypot Check
+    if (formData.website_url) {
+      console.log("Honeypot triggered. Rejecting silently.");
+      return NextResponse.json({ message: "Form submitted successfully!", id: "honeypot" }, { status: 200 }); // Silent rejection
+    }
+
+    // Name Length Check
+    if (formData.name && formData.name.length > 20 && !formData.name.includes(" ")) {
+      console.log("Suspicious name format detected.");
+      return NextResponse.json({ message: "Invalid name format", error: "Invalid name format" }, { status: 400 });
+    }
+
+    // Strict Phone Validation
+    if (formData.phone && /[a-zA-Z]/.test(formData.phone)) {
+      console.log("Invalid phone format detected (contains letters).");
+      return NextResponse.json({ message: "Invalid phone number", error: "Please provide a valid phone number" }, { status: 400 });
+    }
+
+    // Turnstile Verification
+    const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
+    if (formData.cf_turnstile_response) {
+      // Allow bypass in development
+      if (process.env.NODE_ENV === 'development' && formData.cf_turnstile_response === 'test-token') {
+        console.log("Turnstile bypass for testing in development.");
+      } else {
+        if (!TURNSTILE_SECRET_KEY) {
+          console.error("TURNSTILE_SECRET_KEY is not set");
+          return NextResponse.json({ message: "Configuration error", error: "Server misconfiguration" }, { status: 500 });
+        }
+
+        const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+        const verifyFormData = new URLSearchParams();
+        verifyFormData.append('secret', TURNSTILE_SECRET_KEY);
+        verifyFormData.append('response', formData.cf_turnstile_response);
+
+        const verifyRes = await fetch(verifyUrl, { // Pass request IP headers if possible, but optional
+          method: 'POST',
+          body: verifyFormData,
+        });
+
+        const verifyData = await verifyRes.json();
+        if (!verifyData.success) {
+          console.error("Turnstile verification failed:", verifyData);
+          return NextResponse.json({ message: "Security check failed", error: "Please complete the captcha" }, { status: 400 });
+        }
+      }
+    } else {
+      console.error("Missing Turnstile response");
+      return NextResponse.json({ message: "Security check required", error: "Please complete the captcha" }, { status: 400 });
+    }
 
     // Validate the request data
     if (!formData.name || !formData.email || !formData.message) {
-      return NextResponse.json({ 
-        message: "Missing required fields", 
-        error: "Name, email, and message are required" 
+      return NextResponse.json({
+        message: "Missing required fields",
+        error: "Name, email, and message are required"
       }, { status: 400 });
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      return NextResponse.json({ 
-        message: "Invalid email address", 
-        error: "Please provide a valid email address" 
+      return NextResponse.json({
+        message: "Invalid email address",
+        error: "Please provide a valid email address"
       }, { status: 400 });
     }
 
@@ -52,9 +105,9 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-    
+
     const resend = new Resend(resendApiKey);
-    
+
     // Get admin email from config
     const adminEmail = config.email.adminEmail;
     if (!adminEmail) {
@@ -66,13 +119,13 @@ export async function POST(request: Request) {
     }
 
     // Determine inquiry type based on contact type
-    const inquiryType = formData.contactType === 'investor' 
-      ? (formData.investorInquiry || 'General') 
+    const inquiryType = formData.contactType === 'investor'
+      ? (formData.investorInquiry || 'General')
       : (formData.academicInquiry || 'General');
 
     // 3. Send email notification to admin
     const { data: adminEmailData, error: adminEmailError } = await resend.emails.send({
-      from: `Blaide Research <${config.email.contactEmail}>`,
+      from: process.env.NODE_ENV === 'development' ? 'onboarding@resend.dev' : `Blaide Research <${config.email.contactEmail}>`,
       to: adminEmail,
       replyTo: formData.email,
       subject: `New Research ${formData.contactType === 'investor' ? 'Investor' : 'Academic'} Inquiry: ${inquiryType}`,
@@ -89,7 +142,7 @@ export async function POST(request: Request) {
 
     // 4. Send confirmation email to the user
     const { error: userEmailError } = await resend.emails.send({
-      from: `Blaide Research <${config.email.contactEmail}>`,
+      from: process.env.NODE_ENV === 'development' ? 'onboarding@resend.dev' : `Blaide Research <${config.email.contactEmail}>`,
       to: formData.email,
       subject: 'Thank you for contacting Blaide Research',
       html: generateResearchUserEmailHtml(formData),
@@ -101,7 +154,7 @@ export async function POST(request: Request) {
     }
 
     // Return success response
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: "Form submitted successfully!",
       id: adminEmailData?.id
     }, { status: 200 });
@@ -121,7 +174,7 @@ export async function POST(request: Request) {
  * Provides status information about the API endpoint
  */
 export async function GET(request: Request) {
-    return NextResponse.json({ 
-      message: "Research Contact API endpoint is active. Use POST to submit form data." 
-    }, { status: 200 });
+  return NextResponse.json({
+    message: "Research Contact API endpoint is active. Use POST to submit form data."
+  }, { status: 200 });
 } 
