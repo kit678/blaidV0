@@ -8,7 +8,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-// import { usePathname } from 'next/navigation' // No longer needed for variant logic
+import { usePathname } from 'next/navigation'
 
 // Define props including the new variant
 interface HeaderProps {
@@ -29,7 +29,7 @@ const mainLogoSrc = "/logos/logov7.svg"
 const researchLogoSrc = "/logos/logov8Research.svg"
 
 export default function Header({ variant }: HeaderProps) { // Accept variant prop
-  // const pathname = usePathname() // Remove pathname usage
+  const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -58,28 +58,30 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
       const targetId = href.substring(1); // Remove the #
 
       // If href is just "#", scroll to top
-      if (!targetId) { 
+      if (!targetId) {
         console.log("Hash link is #, scrolling to top");
         window.scrollTo({ top: 0, behavior: "smooth" });
-      } 
+      }
       // Otherwise, find element by ID
-      else { 
+      else {
         console.log(`Hash link clicked: ${href}, looking for element with id: ${targetId}`);
-      const targetElement = document.getElementById(targetId)
-      if (targetElement) {
+        const targetElement = document.getElementById(targetId)
+        if (targetElement) {
           console.log(`Found target element, scrolling to it: `, targetElement);
           targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
         } else {
           console.warn(`Target element with id "${targetId}" not found in the DOM`);
         }
       }
-      
+
       if (isMenuOpen) {
         setIsMenuOpen(false)
       }
-    } 
+    }
     // Check if it's a root hash link for the main page
     else if (href.startsWith("/#") && variant === 'main') {
+      // Only intercept if we are already on the home page
+      if (pathname === "/") {
         e.preventDefault()
         const targetId = href.replace("/#", "")
         if (!targetId) {
@@ -90,9 +92,12 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
             targetElement.scrollIntoView({ behavior: "smooth" })
           }
         }
-        if (isMenuOpen) {
-          setIsMenuOpen(false)
-        }
+      }
+      // If not on home page, let default Link behavior handle the navigation to "/"
+
+      if (isMenuOpen) {
+        setIsMenuOpen(false)
+      }
     } else {
       // Handle regular navigation or navigation from main page root hashes
       if (isMenuOpen) {
@@ -103,13 +108,12 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 px-4 md:px-16 py-6 transition-all duration-300 ${
-        isScrolled ? "bg-black/90 backdrop-blur-md py-4" : "bg-transparent py-8"
-      }`}
+      className={`fixed top-0 left-0 w-full z-50 px-4 md:px-16 py-6 transition-all duration-300 ${isScrolled ? "bg-black/90 backdrop-blur-md py-4" : "bg-transparent py-8"
+        }`}
     >
       <div className="container mx-auto flex items-center justify-between">
-        <Link 
-          href={logoHref} 
+        <Link
+          href={logoHref}
           className="flex items-center gap-2 text-white"
           onClick={(e) => handleAnchorClick(e, logoHref)}
         >
@@ -169,10 +173,10 @@ export default function Header({ variant }: HeaderProps) { // Accept variant pro
                   {link.label}
                 </Link>
               ))}
-              <Button 
-                asChild 
-                variant="primary-pill" 
-                size="pill" 
+              <Button
+                asChild
+                variant="primary-pill"
+                size="pill"
                 className="mt-4 text-center text-lg"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleAnchorClick(e as any, contactHref)}
               >
