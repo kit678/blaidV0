@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { config } from '@/lib/config';
 import { generateAdminEmailHtml, generateUserEmailHtml } from '@/lib/email-templates';
-import { addContactMessage, ContactFormData } from '@/lib/firebase';
+import { ContactFormData } from '@/lib/firebase';
+import { addContactMessageAdmin, logFailedSubmission } from '@/lib/firebase-admin';
 
 const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
 
@@ -15,12 +16,14 @@ export async function POST(req: NextRequest) {
     // Honeypot Check
     if (body.website_url) {
       console.log("Honeypot triggered. Rejecting silently.");
+      await logFailedSubmission("Honeypot", body, { ip: req.headers.get('x-forwarded-for') || 'unknown' });
       return NextResponse.json({ success: true, id: "honeypot" }); // Silent rejection
     }
 
     // Name Length Check (Suspiciously long single string)
     if (body.name && body.name.length > 20 && !body.name.includes(" ")) {
       console.log("Suspicious name format detected.");
+      await logFailedSubmission("Invalid Name Format", body);
       return NextResponse.json({ error: 'Invalid name format' }, { status: 400 });
     }
 
@@ -28,6 +31,7 @@ export async function POST(req: NextRequest) {
     // If phone contains letters, reject.
     if (body.phone && /[a-zA-Z]/.test(body.phone)) {
       console.log("Invalid phone format detected (contains letters).");
+      await logFailedSubmission("Invalid Phone Format", body);
       return NextResponse.json({ error: 'Invalid phone number' }, { status: 400 });
     }
 
@@ -56,18 +60,20 @@ export async function POST(req: NextRequest) {
         const verifyData = await verifyRes.json();
         if (!verifyData.success) {
           console.error("Turnstile verification failed:", verifyData);
+          await logFailedSubmission("Turnstile Failed", body, { error: JSON.stringify(verifyData) });
           return NextResponse.json({ error: 'Security check failed' }, { status: 400 });
         }
       }
     } else {
       // Enforce Turnstile
       console.error("Missing Turnstile response");
+      await logFailedSubmission("Missing Turnstile", body);
       return NextResponse.json({ error: 'Security check required' }, { status: 400 });
     }
 
     // 1. Store the contact message in Firestore
     try {
-      await addContactMessage(body);
+      await addContactMessageAdmin(body);
     } catch (error) {
       console.error('Error storing contact message in Firestore:', error);
       // Continue with email sending even if Firestore fails

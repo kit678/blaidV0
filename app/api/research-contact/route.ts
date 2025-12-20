@@ -6,7 +6,7 @@ import {
   generateResearchAdminEmailHtml,
   generateResearchUserEmailHtml
 } from '@/lib/research-email-templates';
-import { addResearchContactMessage } from '@/lib/firebase';
+import { addResearchContactMessageAdmin, logFailedSubmission } from '@/lib/firebase-admin';
 
 /**
  * Handler for POST requests to /api/research-contact
@@ -23,18 +23,21 @@ export async function POST(request: Request) {
     // Honeypot Check
     if (formData.website_url) {
       console.log("Honeypot triggered. Rejecting silently.");
+      await logFailedSubmission("Honeypot-Research", formData, { ip: request.headers.get('x-forwarded-for') || 'unknown' });
       return NextResponse.json({ message: "Form submitted successfully!", id: "honeypot" }, { status: 200 }); // Silent rejection
     }
 
     // Name Length Check
     if (formData.name && formData.name.length > 20 && !formData.name.includes(" ")) {
       console.log("Suspicious name format detected.");
+      await logFailedSubmission("Invalid Name Format-Research", formData);
       return NextResponse.json({ message: "Invalid name format", error: "Invalid name format" }, { status: 400 });
     }
 
     // Strict Phone Validation
     if (formData.phone && /[a-zA-Z]/.test(formData.phone)) {
       console.log("Invalid phone format detected (contains letters).");
+      await logFailedSubmission("Invalid Phone Format-Research", formData);
       return NextResponse.json({ message: "Invalid phone number", error: "Please provide a valid phone number" }, { status: 400 });
     }
 
@@ -63,11 +66,13 @@ export async function POST(request: Request) {
         const verifyData = await verifyRes.json();
         if (!verifyData.success) {
           console.error("Turnstile verification failed:", verifyData);
+          await logFailedSubmission("Turnstile Failed-Research", formData, { error: JSON.stringify(verifyData) });
           return NextResponse.json({ message: "Security check failed", error: "Please complete the captcha" }, { status: 400 });
         }
       }
     } else {
       console.error("Missing Turnstile response");
+      await logFailedSubmission("Missing Turnstile-Research", formData);
       return NextResponse.json({ message: "Security check required", error: "Please complete the captcha" }, { status: 400 });
     }
 
@@ -90,7 +95,7 @@ export async function POST(request: Request) {
 
     // 1. Store the contact form data in Firebase
     try {
-      await addResearchContactMessage(formData);
+      await addResearchContactMessageAdmin(formData);
     } catch (error) {
       console.error('Error storing contact message in Firebase:', error);
       // Continue with email sending even if storage fails
